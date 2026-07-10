@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Growth Competitive Audit</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F8F7F5;
+      --surface: #FFFFFF;
+      --border: #E5E3DF;
+      --text-primary: #1A1A1A;
+      --text-secondary: #6B6560;
+      --text-tertiary: #9E9891;
+      --accent: #F56400;
+      --jtbd1: #2563EB;
+      --jtbd1-bg: #EFF6FF;
+      --jtbd1-border: #BFDBFE;
+      --jtbd2: #7C3AED;
+      --jtbd2-bg: #F5F3FF;
+      --jtbd2-border: #DDD6FE;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.10);
+      --shadow-lg: 0 12px 28px rgba(0,0,0,.14);
+      --radius: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ─── PAGE TABS ─── */
+    .page-tabs-wrap {
+      max-width: 1600px;
+      margin: 24px auto 0;
+      display: flex;
+      gap: 4px;
+    }
+    .page-tab {
+      padding: 10px 24px;
+      border-radius: 8px 8px 0 0;
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all .15s;
+    }
+    .page-tab:hover { color: var(--text-primary); }
+    .page-tab.active {
+      background: var(--bg);
+      border-color: var(--border);
+      border-bottom-color: var(--bg);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* ─── PAGE HERO (non-sticky) ─── */
+    .page-hero {
+      padding: 48px 32px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .page-hero-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .page-hero-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hero-disclaimer {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      padding: 10px 0 0;
+    }
+    .hero-disclaimer a {
+      color: var(--text-tertiary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .hero-disclaimer a:hover { color: var(--text-secondary); }
+    .page-hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .page-hero h1 span { color: var(--accent); }
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+      background: #E8E6E2;
+    }
+    .author-handle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* ─── FILTER BAR (sticky) ─── */
+    #filter-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-bar-inner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 32px;
+      max-width: 1600px;
+      margin: 0 auto;
+      height: 52px;
+    }
+    .filter-bar-apps {
+      border-top: 1px solid var(--border);
+      height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      overflow: hidden;
+    }
+
+    /* Segmented control */
+    .seg-control {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: #F0EFED;
+      padding: 3px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .seg-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      transition: all .15s;
+    }
+    .seg-btn:hover { color: var(--text-primary); }
+    .seg-btn[data-tooltip] { position: relative; }
+    .seg-btn[data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-primary);
+      color: var(--surface);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 8px 12px;
+      border-radius: 6px;
+      white-space: normal;
+      max-width: 420px;
+      text-align: left;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 200;
+    }
+    .seg-btn[data-tooltip]:hover::after { opacity: 1; }
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .seg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .seg-dot.j1 { background: var(--jtbd1); }
+    .seg-dot.j2 { background: var(--jtbd2); }
+
+    /* Filter separator */
+    .filter-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 12px;
+      flex-shrink: 0;
+    }
+
+    /* Push spacer — fills remaining row 1 space before stats */
+    .filter-sep-push {
+      flex: 1;
+    }
+
+    /* App chips — scrollable section */
+    .app-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      width: 100%;
+      min-width: 0;
+      scrollbar-width: none;
+    }
+    .app-chips-row::-webkit-scrollbar { display: none; }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 7px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .chip:hover { border-color: #C0BDB8; color: var(--text-primary); }
+    .chip.active {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: #fff;
+    }
+    .chip.unavailable {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .chip .chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .chip .chip-logo {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      object-fit: cover;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .chip-group-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+      flex-shrink: 0;
+      margin: 0 8px 0 4px;
+    }
+    .chip-group-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-right: 2px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .chip-group-label:hover {
+      color: var(--text-secondary);
+    }
+    .chip-group-label.active {
+      color: var(--text-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* Stats */
+    .header-stats {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .header-stats strong { color: var(--text-secondary); font-weight: 600; }
+
+    /* ─── MAIN ─── */
+    #main {
+      padding: 40px 32px 80px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* ─── APP GROUP ─── */
+    .app-group { margin-bottom: 96px; }
+    .app-group-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-logo {
+      position: relative;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.15);
+      overflow: hidden;
+    }
+    .app-logo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .app-group-name { font-size: 32px; font-weight: 700; letter-spacing: -0.75px; }
+    .app-group-count {
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: #F0EFED;
+      padding: 3px 10px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .count-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .count-dot.j1 { background: var(--jtbd1); }
+    .count-dot.j2 { background: var(--jtbd2); }
+    .count-sep { color: var(--text-tertiary); margin: 0 1px; }
+
+    /* ─── SCROLL ROW ─── */
+    .card-grid-wrap { position: relative; }
+    .card-grid-wrap::before,
+    .card-grid-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 80px;
+      height: calc(100% - 16px);
+      pointer-events: none;
+      transition: opacity .2s;
+      z-index: 1;
+    }
+    .card-grid-wrap::after  { right: 0; background: linear-gradient(to right, transparent, #F8F7F5 80%); }
+    .card-grid-wrap::before { left: 0;  background: linear-gradient(to left,  transparent, #F8F7F5 80%); opacity: 0; }
+    .card-grid-wrap.at-end::after  { opacity: 0; }
+    .card-grid-wrap.at-end   .scroll-arrow.right { opacity: 0; pointer-events: none; }
+    .card-grid-wrap.at-start::before { opacity: 0; }
+    .card-grid-wrap.at-start .scroll-arrow.left  { opacity: 0; pointer-events: none; }
+
+    .scroll-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(calc(-50% - 8px));
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity .2s, box-shadow .15s;
+      color: var(--text-primary);
+    }
+    .scroll-arrow:hover { box-shadow: var(--shadow-lg); }
+    .scroll-arrow.right { right: 10px; }
+    .scroll-arrow.left  { left: 10px; }
+
+    .card-grid {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: #D5D2CD transparent;
+    }
+    .card-grid::-webkit-scrollbar { height: 5px; }
+    .card-grid::-webkit-scrollbar-track { background: transparent; }
+    .card-grid::-webkit-scrollbar-thumb { background: #D5D2CD; border-radius: 10px; }
+
+    /* ─── CARD ─── */
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 0 0 760px;
+    }
+
+    /* Image container clips the Mobbin branding bar */
+    .card-img-container {
+      overflow: hidden;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #F0EFED;
+      cursor: zoom-in;
+      /* Mobbin screenshots: 768×524. Bar ~48px. Content: 768×476. */
+      aspect-ratio: 768 / 476;
+      transition: opacity .15s;
+    }
+    .card-img-container:hover { opacity: 0.88; }
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .card-img-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #F5F4F2 0%, #E8E6E2 100%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-img-placeholder span { font-size: 28px; font-weight: 800; color: #D0CEC9; }
+
+    /* ─── MOBILE ROW ─── */
+    .mobile-row {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-row-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .mobile-card-grid {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .mobile-card-grid::-webkit-scrollbar { display: none; }
+    .mobile-card {
+      flex: 0 0 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      color: inherit;
+    }
+    .mobile-card-img-wrap {
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #F0EFED;
+      aspect-ratio: 9 / 19;
+      transition: opacity .15s;
+      cursor: pointer;
+    }
+    .mobile-card-img-wrap:hover { opacity: 0.85; }
+    .mobile-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .mobile-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 8px;
+    }
+
+    .card-body { display: flex; flex-direction: column; gap: 4px; }
+
+    /* ─── JTBD BADGE ─── */
+    .jtbd-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      width: fit-content;
+    }
+    .jtbd-badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .jtbd-badge.j1 { background: var(--jtbd1-bg); color: var(--jtbd1); }
+    .jtbd-badge.j1::before { background: var(--jtbd1); }
+    .jtbd-badge.j2 { background: var(--jtbd2-bg); color: var(--jtbd2); }
+    .jtbd-badge.j2::before { background: var(--jtbd2); }
+
+    .card-title { font-size: 13px; font-weight: 600; letter-spacing: -0.1px; line-height: 1.35; max-width: 62ch; }
+    .card-desc  { font-size: 11.5px; color: var(--text-secondary); line-height: 1.5; max-width: 66ch; }
+    .card-link  {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 2px; font-size: 11px; font-weight: 500; color: var(--text-tertiary);
+      text-decoration: none;
+    }
+    .card-link:hover { color: var(--text-secondary); }
+    .card-link svg { flex-shrink: 0; }
+
+    /* ─── RATING BADGE ─── */
+    .rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .rating-badge { font-weight: 600; }
+    .rating-better  { background: #DCFCE7; color: #15803D; }
+    .rating-average { background: #F3F4F6; color: #4B5563; }
+    .rating-poor    { background: #FEE2E2; color: #B91C1C; }
+
+    /* ─── APP SUMMARY BLOCK ─── */
+    .app-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+    .app-summary-col {
+      padding: 14px 16px;
+    }
+    .app-summary-col:first-child {
+      border-right: 1px solid var(--border);
+      background: #F0FDF4;
+    }
+    .app-summary-col:last-child {
+      background: #FFFBEB;
+    }
+    .app-summary-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .app-summary-col:first-child .app-summary-label { color: #15803D; }
+    .app-summary-col:last-child  .app-summary-label { color: #B45309; }
+    .app-summary-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .app-summary-list li {
+      display: flex;
+      gap: 7px;
+      align-items: flex-start;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 62ch;
+    }
+    .app-summary-list li::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .app-summary-col:first-child .app-summary-list li::before { background: #16A34A; }
+    .app-summary-col:last-child  .app-summary-list li::before { background: #D97706; }
+
+    /* ─── CARD EVALUATION ROWS ─── */
+    .card-eval {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 8px;
+      padding-top: 9px;
+      border-top: 1px solid var(--border);
+    }
+    .eval-row {
+      display: flex;
+      gap: 7px;
+      align-items: flex-start;
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+    .eval-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .eval-works  .eval-label { color: #15803D; }
+    .eval-watchout .eval-label { color: #B45309; }
+    .eval-text { color: var(--text-secondary); max-width: 66ch; }
+
+    /* ─── RATING DROPDOWN ─── */
+    .rating-seg {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: #F0EFED;
+      padding: 3px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .rating-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      transition: all .15s;
+    }
+    .rating-btn:hover { color: var(--text-primary); }
+    .rating-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .rating-btn.unavailable { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+
+    /* ─── SUGGEST PAGE ─── */
+    .suggest-app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .suggest-app-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .suggest-app-name {
+      font-size: 16px;
+      font-weight: 650;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .suggest-app-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ─── SYNTHESIS PAGE ─── */
+    #synthesis {
+      padding: 48px 32px 100px;
+    }
+    .synth-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 72px;
+    }
+    .synth-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    .synth-h2 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.75px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    .synth-lead {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 62ch;
+      margin-bottom: 32px;
+    }
+    /* Insight cards */
+    .insight-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .insight-card {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .insight-card:first-child { border-top: 1px solid var(--border); }
+    .insight-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      padding-top: 3px;
+    }
+    .insight-body { display: flex; flex-direction: column; gap: 6px; }
+    .insight-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      line-height: 1.3;
+    }
+    .insight-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 66ch;
+    }
+    .insight-apps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .insight-app-tag {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      background: #F0EFED;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    /* Pattern cards */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .pattern-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--surface);
+    }
+    .pattern-card.good { border-top: 3px solid #16A34A; }
+    .pattern-card.bad  { border-top: 3px solid #D97706; }
+    .pattern-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      width: fit-content;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .pattern-card.good .pattern-tag { background: #DCFCE7; color: #15803D; }
+    .pattern-card.bad  .pattern-tag { background: #FEF3C7; color: #B45309; }
+    .pattern-name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      line-height: 1.3;
+    }
+    .pattern-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      max-width: 52ch;
+    }
+    .pattern-why {
+      font-size: 12px;
+      line-height: 1.55;
+      max-width: 52ch;
+      padding: 10px 12px;
+      border-radius: 6px;
+    }
+    .pattern-card.good .pattern-why { background: #F0FDF4; color: #166534; }
+    .pattern-card.bad  .pattern-why { background: #FFFBEB; color: #92400E; }
+    .pattern-why strong { font-weight: 600; }
+    .pattern-examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 2px;
+    }
+    .pattern-example-tag {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      background: #F5F4F2;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state { text-align: center; padding: 64px 20px; color: var(--text-tertiary); }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      background: rgba(8,8,8,.97);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+
+    /* Close button */
+    .lb-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      z-index: 10;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.8);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .lb-close:hover { background: rgba(255,255,255,.2); color: #fff; }
+
+    /* Image area — grows to fill all available space */
+    .lb-image-area {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      cursor: zoom-out;
+    }
+
+    .lb-img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 8px 48px rgba(0,0,0,.7);
+      cursor: default;
+      clip-path: inset(0 0 6% 0 round 4px);
+    }
+
+    /* Prev / Next — overlaid on image edges */
+    .lb-nav {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      z-index: 2;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, opacity .15s;
+      backdrop-filter: blur(4px);
+    }
+    .lb-nav:hover { background: rgba(0,0,0,.65); }
+    .lb-nav:disabled { opacity: .2; cursor: default; }
+    .lb-prev { left: 14px; }
+    .lb-next { right: 14px; }
+
+    /* Metadata overlay — top-left of image area */
+    .lb-meta-overlay {
+      position: absolute;
+      top: 14px; left: 14px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: calc(100% - 80px);
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(8px);
+      border-radius: 8px;
+      padding: 6px 10px;
+      pointer-events: none;
+    }
+    .lb-app-logo {
+      width: 22px; height: 22px;
+      border-radius: 5px;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; color: #fff;
+    }
+    .lb-app-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .lb-app-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.6); flex-shrink: 0; }
+    .lb-meta-sep { color: rgba(255,255,255,.25); flex-shrink: 0; }
+    .lb-title { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Mobbin link row — centered, below image area */
+    .lb-link-row {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      padding: 10px 20px 8px;
+    }
+    .lb-link {
+      font-size: 14px; color: rgba(255,255,255,.55); text-decoration: none;
+      display: flex; align-items: center; gap: 5px;
+      transition: color .15s;
+    }
+    .lb-link:hover { color: rgba(255,255,255,.95); }
+
+    /* Thumbnail strip */
+    .lb-thumbs {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 8px;
+      justify-content: safe center;
+      overflow-x: auto;
+      padding: 6px 20px 16px;
+      scrollbar-width: none;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .lb-thumbs::-webkit-scrollbar { display: none; }
+
+    .lb-thumb {
+      flex: 0 0 auto;
+      width: 116px;
+      height: 72px;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      opacity: .45;
+      transition: opacity .15s, border-color .15s;
+    }
+    .lb-thumb:hover { opacity: .8; }
+    .lb-thumb.active { border-color: #fff; opacity: 1; }
+    .lb-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Non-sticky title -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-left">
+      <h1>Seller Growth <span>Competitive Audit</span></h1>
+    </div>
+    <div class="author">
+      <img class="author-avatar" src="https://avatars.githubusercontent.com/u/7329860?v=4" alt="@rhsiung"
+           onerror="this.style.background='#E8E6E2'">
+      <span class="author-handle">@rhsiung</span>
+    </div>
+  </div>
+  <p class="hero-disclaimer">Screens sourced from <a href="https://mobbin.com" target="_blank" rel="noopener">Mobbin</a>. Ratings, summaries, and annotations largely generated with Claude.</p>
+  <div class="page-tabs-wrap">
+    <button class="page-tab active" data-page="audit">Screens</button>
+    <button class="page-tab" data-page="synthesis">Synthesis</button>
+    <button class="page-tab" data-page="suggest">Suggest an app</button>
+  </div>
+</div>
+
+
+<!-- Sticky filter bar -->
+<div id="filter-bar">
+  <div class="filter-bar-inner">
+    <div class="seg-control" id="topicSeg">
+      <button class="seg-btn active" data-jtbd="all">All</button>
+      <button class="seg-btn" data-jtbd="1" data-tooltip="As a seller, I can easily see how my shop is performing so that I can spot what's working and what isn't"><span class="seg-dot j1"></span>Performance</button>
+      <button class="seg-btn" data-jtbd="2" data-tooltip="As a seller, I can easily know what to do next so that I can take action to grow my business"><span class="seg-dot j2"></span>Actions</button>
+    </div>
+    <div class="filter-sep"></div>
+    <div id="ratingSeg" class="rating-seg"></div>
+    <div class="filter-sep-push"></div>
+    <div id="headerStats" class="header-stats"></div>
+  </div>
+  <div class="filter-bar-apps">
+    <div id="appChips" class="app-chips-row"></div>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<section id="suggest" style="display:none">
+  <div class="synth-inner" style="padding-top: 48px;">
+    <div>
+      <div class="synth-section-label">Got a suggestion?</div>
+      <h2 class="synth-h2">Suggest an app</h2>
+      <p class="synth-lead">DM <strong>@rhsiung</strong> on Slack if you have another app you'd like to add. If screenshots are not available through Mobbin, take screenshots manually and send them to her to add.</p>
+    </div>
+
+    <div>
+      <div class="synth-section-label">Not yet in the audit</div>
+      <h2 class="synth-h2">Apps without Mobbin coverage</h2>
+      <p class="synth-lead">These apps were on the original list but don't have screenshots available in Mobbin yet.</p>
+      <div class="suggest-app-grid">
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Poshmark</div>
+          <div class="suggest-app-desc">Peer-to-peer fashion resale marketplace with seller tools for listings, offers, and sales tracking.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Bandcamp</div>
+          <div class="suggest-app-desc">Music platform where artists sell directly to fans — albums, merch, and subscription tiers.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Semrush</div>
+          <div class="suggest-app-desc">SEO and content marketing platform with keyword analytics, site audits, and competitor analysis.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Ahrefs</div>
+          <div class="suggest-app-desc">SEO toolset for backlink analysis, keyword research, and site health monitoring.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Toast</div>
+          <div class="suggest-app-desc">Restaurant POS system with sales reporting, labor tracking, and guest insights for food service operators.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Robinhood</div>
+          <div class="suggest-app-desc">Consumer investment app with portfolio performance tracking, news, and analyst ratings.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Redbubble</div>
+          <div class="suggest-app-desc">Print-on-demand marketplace where artists upload designs and earn royalties on products like shirts, stickers, and art prints.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Society6</div>
+          <div class="suggest-app-desc">Artist marketplace for selling designs on home decor, apparel, and accessories with Redbubble-style royalty model.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Faire</div>
+          <div class="suggest-app-desc">B2B wholesale marketplace connecting independent brands with retail buyers — sellers manage orders, payments, and retailer relationships.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Printful</div>
+          <div class="suggest-app-desc">Print-on-demand fulfillment platform that integrates with e-commerce stores to handle production and shipping of custom products.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Printify</div>
+          <div class="suggest-app-desc">Print-on-demand marketplace with a network of print providers — sellers design products and Printify handles production and fulfillment.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">BigCommerce</div>
+          <div class="suggest-app-desc">Enterprise e-commerce platform with built-in analytics, multi-channel selling, and headless commerce capabilities.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">ShipStation</div>
+          <div class="suggest-app-desc">Shipping and order management platform used by e-commerce sellers to automate label creation, tracking, and carrier selection.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Pirateship</div>
+          <div class="suggest-app-desc">Discounted shipping platform popular with small sellers — offers USPS and UPS rates at deep discounts with a simple label-printing workflow.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Clover</div>
+          <div class="suggest-app-desc">POS and business management platform for retail and restaurants with sales reporting, inventory tracking, and employee management.</div>
+        </div>
+        <div class="suggest-app-card">
+          <div class="suggest-app-name">Lightspeed</div>
+          <div class="suggest-app-desc">Omnichannel retail POS with advanced inventory analytics, supplier management, and integrated e-commerce for physical retailers.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="synthesis" style="display:none">
+  <div class="synth-inner">
+
+    <!-- Key Insights -->
+    <div>
+      <div class="synth-section-label">Across all 24 apps</div>
+      <h2 class="synth-h2">Key insights</h2>
+      <p class="synth-lead">Five patterns that emerge from comparing how these products approach seller performance understanding and action guidance.</p>
+      <div class="insight-grid">
+
+        <div class="insight-card">
+          <div class="insight-num">01</div>
+          <div class="insight-body">
+            <div class="insight-title">The "why gap" is the biggest shared design failure</div>
+            <div class="insight-desc">Most analytics surfaces show what happened — sales down 12%, sessions up 8% — but not why. The apps that earn the highest ratings invest in decomposition: waterfalls, funnels with per-step conversion rates, source breakdowns. They treat the number as the beginning of a question, not the answer. This is the clearest design opportunity for Etsy: connect performance readings to explanatory signals sellers can actually act on.</div>
+            <div class="insight-apps">
+              <span class="insight-app-tag">Stripe — MRR waterfall</span>
+              <span class="insight-app-tag">HubSpot — funnel conversion rates</span>
+              <span class="insight-app-tag">Oura — readiness contributor breakdown</span>
+              <span class="insight-app-tag">Wave — cash flow category comparison</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-num">02</div>
+          <div class="insight-body">
+            <div class="insight-title">Context transforms recommendations from noise to signal</div>
+            <div class="insight-desc">Generic "things to try" lists rarely drive action. The highest-rated action flows surface the right recommendation at the moment of maximum receptivity — immediately after a campaign sends, right after setup completes, when a metric dips. Timing and context are the real differentiators, not the content of the recommendation itself. A great suggestion shown at the wrong moment is still ignored.</div>
+            <div class="insight-apps">
+              <span class="insight-app-tag">HubSpot — metric-triggered tooltip</span>
+              <span class="insight-app-tag">Klaviyo — AI insight below flagged metric</span>
+              <span class="insight-app-tag">Whoop — coaching text below each metric</span>
+              <span class="insight-app-tag">Wave — Advisor bar adjacent to transactions</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-num">03</div>
+          <div class="insight-body">
+            <div class="insight-title">Benchmarks are the missing link in most performance views</div>
+            <div class="insight-desc">Without a reference point, a seller can't know whether their numbers are good. A 4% open rate, 120 daily sessions, or 43 engagements is meaningless in isolation. Mailchimp's three-way benchmark (this campaign / your average / industry) and Pinterest's audience-vs-population view are rare exceptions. Most sellers don't know if their numbers are good or bad — the product should tell them.</div>
+            <div class="insight-apps">
+              <span class="insight-app-tag">Mailchimp — industry benchmarking</span>
+              <span class="insight-app-tag">Whoop — personal 30-day average as benchmark</span>
+              <span class="insight-app-tag">Klaviyo — Healthy / Needs attention thresholds</span>
+              <span class="insight-app-tag">Wave — year-over-year cash flow comparison</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-num">04</div>
+          <div class="insight-body">
+            <div class="insight-title">Progress framing consistently outperforms feature menus</div>
+            <div class="insight-desc">Shopify's staged checklist and Duolingo's streak system outperform every app that surfaces growth as a menu of features to explore. Wrapping actions inside a visible progress arc — with a named goal at the end — reduces cognitive load and creates forward momentum. The specific action matters less than the frame around it. Sellers need to feel like they're moving toward something, not choosing from an infinite options list.</div>
+            <div class="insight-apps">
+              <span class="insight-app-tag">Shopify — staged setup guide</span>
+              <span class="insight-app-tag">Duolingo — streak + XP system</span>
+              <span class="insight-app-tag">Klaviyo — Action Center checklist with Mark done</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-num">05</div>
+          <div class="insight-body">
+            <div class="insight-title">Analytics and actions are siloed when they need to be one surface</div>
+            <div class="insight-desc">In every app audited, performance data and growth recommendations live in separate navigation sections. The mental gap between "I see my sales are down" and "here's what I can do about it" is left entirely to the seller to bridge — and most don't. This is the single largest shared failure across the products audited, and the most significant design opportunity for the Etsy seller platform.</div>
+            <div class="insight-apps">
+              <span class="insight-app-tag">Partially bridged: HubSpot, Klaviyo, Wave</span>
+              <span class="insight-app-tag">Well bridged: Whoop, Oura</span>
+              <span class="insight-app-tag">Fully siloed: Stripe, TikTok, Pinterest, Instagram, Depop, Substack, eBay, Squarespace, Wix, Gumroad</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Patterns that work -->
+    <div>
+      <div class="synth-section-label">Design patterns</div>
+      <h2 class="synth-h2">What works well</h2>
+      <p class="synth-lead">Patterns observed across multiple products that reliably help sellers understand performance or take action.</p>
+      <div class="pattern-grid">
+
+        <div class="pattern-card good">
+          <span class="pattern-tag">Effective pattern</span>
+          <div class="pattern-name">Decomposition chart</div>
+          <div class="pattern-desc">Breaking a top-line number into its contributing factors — MRR into new/expansion/churn, traffic into source channels, conversion into funnel stages — surfaces the "why" that aggregate metrics obscure.</div>
+          <div class="pattern-why"><strong>Why it works:</strong> Sellers can't act on "revenue was down." They can act on "churn increased 3% while new customers held steady." Decomposition turns a status report into a diagnosis.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Stripe MRR waterfall</span>
+            <span class="pattern-example-tag">Oura readiness contributors</span>
+            <span class="pattern-example-tag">Wave cash flow by category</span>
+            <span class="pattern-example-tag">HubSpot deal funnel</span>
+            <span class="pattern-example-tag">Squarespace purchase funnel</span>
+          </div>
+        </div>
+
+        <div class="pattern-card good">
+          <span class="pattern-tag">Effective pattern</span>
+          <div class="pattern-name">Benchmark anchoring</div>
+          <div class="pattern-desc">Showing a metric alongside a reference point — industry average, your own prior period, comparable users — gives sellers the calibration they need to judge whether a number is good.</div>
+          <div class="pattern-why"><strong>Why it works:</strong> Absolute numbers are uninterpretable without a baseline. Benchmark anchoring turns a number into a signal by answering the question sellers always have: "Is this good?"</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Mailchimp campaign benchmark</span>
+            <span class="pattern-example-tag">Whoop personal 30-day average</span>
+            <span class="pattern-example-tag">Klaviyo Healthy / Needs attention</span>
+          </div>
+        </div>
+
+        <div class="pattern-card good">
+          <span class="pattern-tag">Effective pattern</span>
+          <div class="pattern-name">Contextual action trigger</div>
+          <div class="pattern-desc">Surfacing a recommendation at the moment it's most relevant — post-send, post-setup, when a metric dips — dramatically increases the likelihood it will be acted on.</div>
+          <div class="pattern-why"><strong>Why it works:</strong> Relevance is a function of timing as much as content. A recommendation shown at the right moment feels helpful; the same recommendation shown at the wrong moment feels like noise.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Klaviyo AI insight below metric</span>
+            <span class="pattern-example-tag">Whoop coaching below sleep deficit</span>
+            <span class="pattern-example-tag">Wave Advisor bar beside transactions</span>
+          </div>
+        </div>
+
+        <div class="pattern-card good">
+          <span class="pattern-tag">Effective pattern</span>
+          <div class="pattern-name">Staged progress tracker</div>
+          <div class="pattern-desc">Breaking a large goal into labeled stages with visible progress gives sellers a clear "you are here," reduces overwhelm, and creates completion momentum across stages.</div>
+          <div class="pattern-why"><strong>Why it works:</strong> Completing one stage creates the motivation to start the next. Sellers feel like they're advancing toward a goal — even before reaching it — which is more sustaining than an undifferentiated to-do list.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Shopify setup guide</span>
+            <span class="pattern-example-tag">Duolingo streak calendar</span>
+          </div>
+        </div>
+
+        <div class="pattern-card good">
+          <span class="pattern-tag">Effective pattern</span>
+          <div class="pattern-name">Impact quantification</div>
+          <div class="pattern-desc">Attaching a specific, credible outcome estimate to a suggested action — "2.2x more views," "23% higher open rate" — makes prioritizing between options tractable.</div>
+          <div class="pattern-why"><strong>Why it works:</strong> Sellers face many possible improvements. Impact estimates let them compare options and choose the highest-leverage move rather than the most obvious or most recently suggested one.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">LinkedIn profile suggestions</span>
+            <span class="pattern-example-tag">Mailchimp content score</span>
+            <span class="pattern-example-tag">Depop "2x more views" discount nudge</span>
+          </div>
+        </div>
+
+        <div class="pattern-card good">
+          <span class="pattern-tag">Effective pattern</span>
+          <div class="pattern-name">Loss aversion framing</div>
+          <div class="pattern-desc">Warning users about what they stand to lose — a streak, a momentum indicator, a hard-won status — is more motivating than showing what they'll gain from taking action.</div>
+          <div class="pattern-why"><strong>Why it works:</strong> Loss aversion is roughly 2× more motivating than equivalent gain framing. The highest-engagement consumer apps exploit this systematically. The risk is that overuse feels manipulative.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Duolingo streak warning</span>
+            <span class="pattern-example-tag">Duolingo Streak Society lock</span>
+          </div>
+        </div>
+
+        <div class="pattern-card good">
+          <span class="pattern-tag">Effective pattern</span>
+          <div class="pattern-name">AI cold-start removal</div>
+          <div class="pattern-desc">Replacing the blank-canvas moment with a conversational prompt, pre-populated examples, or AI-generated starting point eliminates the hardest part of getting started.</div>
+          <div class="pattern-why"><strong>Why it works:</strong> Decision paralysis is highest when nothing exists yet. Any starting point — even an imperfect one — is easier to react to and refine than nothing. AI makes this starting point feel personalized rather than generic.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Canva AI prompt home</span>
+            <span class="pattern-example-tag">Notion AI chip suggestions</span>
+            <span class="pattern-example-tag">Shopify Magic product copy</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Anti-patterns -->
+    <div>
+      <div class="synth-section-label">Design patterns</div>
+      <h2 class="synth-h2">What to avoid</h2>
+      <p class="synth-lead">Patterns that appear frequently across products but consistently fail to help sellers understand performance or take meaningful action.</p>
+      <div class="pattern-grid">
+
+        <div class="pattern-card bad">
+          <span class="pattern-tag">Anti-pattern</span>
+          <div class="pattern-name">Metrics without context</div>
+          <div class="pattern-desc">Displaying numbers without comparators, benchmarks, or trend context leaves sellers unable to assess whether their performance is good, bad, or expected.</div>
+          <div class="pattern-why"><strong>Why it fails:</strong> Numbers without context create false confidence as often as appropriate concern. A seller with a 24% open rate doesn't know if they should be pleased (industry average: 21%) or alarmed (their personal average: 31%).</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Pinterest overview</span>
+            <span class="pattern-example-tag">Depop earned/potential tiles</span>
+            <span class="pattern-example-tag">Substack post stats</span>
+            <span class="pattern-example-tag">Patreon patron count</span>
+            <span class="pattern-example-tag">eBay traffic metrics</span>
+            <span class="pattern-example-tag">Gumroad MRR/customers header</span>
+          </div>
+        </div>
+
+        <div class="pattern-card bad">
+          <span class="pattern-tag">Anti-pattern</span>
+          <div class="pattern-name">Analytics–action separation</div>
+          <div class="pattern-desc">Putting performance data and growth recommendations in separate navigation sections forces sellers to mentally bridge insight to action — a gap most don't cross.</div>
+          <div class="pattern-why"><strong>Why it fails:</strong> The insight ("traffic is down from Search") and the action ("optimize titles and tags") should be one step. Separated by navigation, they feel like unrelated jobs and the connection is never made.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Stripe</span>
+            <span class="pattern-example-tag">Depop</span>
+            <span class="pattern-example-tag">Substack</span>
+            <span class="pattern-example-tag">Patreon</span>
+            <span class="pattern-example-tag">eBay</span>
+            <span class="pattern-example-tag">Squarespace</span>
+            <span class="pattern-example-tag">Wix</span>
+            <span class="pattern-example-tag">Gumroad</span>
+          </div>
+        </div>
+
+        <div class="pattern-card bad">
+          <span class="pattern-tag">Anti-pattern</span>
+          <div class="pattern-name">Feature-level recommendations</div>
+          <div class="pattern-desc">Recommending specific features ("try pop-ups," "create a coupon") rather than outcomes assumes sellers already know their goal and just need to find the right button.</div>
+          <div class="pattern-why"><strong>Why it fails:</strong> Most sellers need to know why to try something before they'll act. Feature recommendations skip the motivation step entirely, leaving sellers to supply the strategy on their own.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Square growth hub</span>
+            <span class="pattern-example-tag">LinkedIn Premium cards</span>
+          </div>
+        </div>
+
+        <div class="pattern-card bad">
+          <span class="pattern-tag">Anti-pattern</span>
+          <div class="pattern-name">Activity-proxy progress</div>
+          <div class="pattern-desc">Measuring and rewarding task completion rather than actual outcomes creates a false sense of progress and can optimize for busywork over meaningful improvement.</div>
+          <div class="pattern-why"><strong>Why it fails:</strong> Completing 8 setup tasks doesn't mean a seller is closer to their first sale. Outcome-based progress ("you've had 50 profile views this week") is harder to implement but more honest and more motivating.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Duolingo XP</span>
+            <span class="pattern-example-tag">Shopify checklist</span>
+          </div>
+        </div>
+
+        <div class="pattern-card bad">
+          <span class="pattern-tag">Anti-pattern</span>
+          <div class="pattern-name">Premium-gating growth tools</div>
+          <div class="pattern-desc">Positioning meaningful growth features exclusively behind a paid tier signals that improvement requires payment rather than effort, and erodes trust in the free experience.</div>
+          <div class="pattern-why"><strong>Why it fails:</strong> Sellers who feel nickel-and-dimed disengage from the platform entirely. Growth tools should feel like a partnership. When they feel like a funnel, sellers stop reading recommendations.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">LinkedIn Premium hub</span>
+          </div>
+        </div>
+
+        <div class="pattern-card bad">
+          <span class="pattern-tag">Anti-pattern</span>
+          <div class="pattern-name">Untimely or generic recommendations</div>
+          <div class="pattern-desc">Surfacing recommendations at arbitrary moments or without personalization — "here are some things you could try" — trains sellers to ignore them entirely.</div>
+          <div class="pattern-why"><strong>Why it fails:</strong> Recommendation fatigue sets in quickly. Once a seller learns that suggestions aren't tailored to their situation, they stop reading them — and that trained inattention is very hard to reverse.</div>
+          <div class="pattern-examples">
+            <span class="pattern-example-tag">Mailchimp AI assistant (home)</span>
+            <span class="pattern-example-tag">LinkedIn profile suggestions</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" aria-modal="true" role="dialog">
+  <button class="lb-close" id="lbClose" aria-label="Close">
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+      <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- Image area (click bg to close) -->
+  <div class="lb-image-area" id="lbImageArea">
+    <div class="lb-meta-overlay">
+      <div id="lbAppLogo" class="lb-app-logo"></div>
+      <span id="lbAppName" class="lb-app-name"></span>
+      <span class="lb-meta-sep">·</span>
+      <span id="lbBadge" class="jtbd-badge"></span>
+      <span id="lbTitle" class="lb-title"></span>
+    </div>
+    <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <img id="lbImg" class="lb-img" src="" alt="">
+    <button class="lb-nav lb-next" id="lbNext" aria-label="Next">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobbin link -->
+  <div class="lb-link-row">
+    <a id="lbLink" class="lb-link" href="#" target="_blank" rel="noopener">
+      View full-res on Mobbin
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+        <path d="M2 10L10 2M10 2H4.5M10 2V7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- Thumbnail strip -->
+  <div class="lb-thumbs" id="lbThumbs"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════ */
+const APP_META = {
+  'Shopify': {
+    color: '#96BF48', letter: 'S', logo: 'https://logo.clearbit.com/shopify.com', rating: 'better',
+    summary: {
+      works: ['Analytics and action guidance are tightly integrated in one platform, reducing context-switching', 'Checklist-driven growth flows with time estimates lower the cognitive cost of knowing what to do next', 'AI shortcuts reduce blank-page friction on the most time-consuming seller tasks'],
+      watchout: ['Analytics depth can feel overwhelming for new sellers without a guided entry point', 'Performance data and action surfaces live in separate nav sections rather than being contextually linked'],
+    },
+  },
+  'Square': {
+    color: '#3E4348', letter: 'Sq', logo: 'https://logo.clearbit.com/squareup.com', rating: 'average',
+    summary: {
+      works: ['Clean, scannable dashboard design surfaces the most important numbers without clutter', 'Outcome-based grouping of growth recommendations ("attract customers", "build loyalty") helps sellers match actions to intent'],
+      watchout: ['Analytics lack the depth needed to diagnose why performance changed, not just that it did', 'Action guidance is feature-level (pop-ups, coupons) rather than strategy-level, assuming sellers already know their goal'],
+    },
+  },
+  'Stripe': {
+    color: '#635BFF', letter: 'St', logo: 'https://logo.clearbit.com/stripe.com', rating: 'better',
+    summary: {
+      works: ['Cohort heatmap and MRR waterfall reveal retention and growth patterns that aggregate metrics completely hide', 'Modular dashboard lets sellers configure their view around the metrics most relevant to their current stage'],
+      watchout: ['Analytics are finance-first; sellers without financial sophistication may struggle to interpret cohort or MRR data', 'Action guidance is essentially absent — strong on understanding performance, weak on knowing what to do about it'],
+    },
+  },
+  'TikTok': {
+    color: '#010101', letter: 'T', logo: 'https://logo.clearbit.com/tiktok.com', rating: 'better',
+    summary: {
+      works: ['Traffic source breakdown and per-post retention curves are unusually granular for a social platform', 'Home screen metric strip satisfies the most common performance check without requiring full analytics navigation'],
+      watchout: ['All analytics are creator-focused — there is no pathway from performance data to revenue or conversion outcomes', 'Action guidance is absent from analytics surfaces; data is descriptive but never prescriptive'],
+    },
+  },
+  'Pinterest': {
+    color: '#E60023', letter: 'P', logo: 'https://logo.clearbit.com/pinterest.com', rating: 'average',
+    summary: {
+      works: ['Dual-metric chart design makes cross-metric correlation questions answerable in a single view', 'Audience comparison against all Pinterest users provides a meaningful baseline that raw audience data lacks'],
+      watchout: ['Analytics are limited to awareness-stage metrics; no clear pathway from performance data to commerce outcomes', 'No contextual connection between what analytics reveal and what sellers should do next'],
+    },
+  },
+  'Instagram': {
+    color: '#C13584', letter: 'Ig', logo: 'https://logo.clearbit.com/instagram.com', rating: 'poor',
+    summary: {
+      works: ['Inline post insights surface performance data at the natural moment a seller reviews their content'],
+      watchout: ['Analytics are hard to find and easy to overlook — not a first-class surface in the product', 'Metrics shown (impressions, follows) are one step removed from seller outcomes like traffic and sales', 'No connection between performance data and any guidance on what to do differently'],
+    },
+  },
+  'HubSpot': {
+    color: '#FF7A59', letter: 'H', logo: 'https://logo.clearbit.com/hubspot.com', rating: 'better',
+    summary: {
+      works: ['Guided action flows are best-in-class — contextual tooltips convert metric readings directly into recommended actions', 'Structured task queues turn an open-ended workday into a concrete, prioritized sequence of next steps'],
+      watchout: ['High information density and sales-team framing creates a steep learning curve for individual sellers', 'Without clear "done for the day" signals, task accumulation can feel overwhelming rather than motivating'],
+    },
+  },
+  'Duolingo': {
+    color: '#58CC02', letter: 'D', logo: 'https://logo.clearbit.com/duolingo.com', rating: 'better',
+    summary: {
+      works: ['Multiple layered engagement mechanics — streaks, XP, leaderboard unlocks — create compounding motivation across different time horizons', 'Self-selected goal targets and loss-aversion framing are expertly calibrated to drive follow-through'],
+      watchout: ['Engagement mechanics are activity-based, not outcome-based — strong signal for habit formation, weak signal for actual progress', 'Aggressive urgency framing can feel manipulative; may create anxiety rather than genuine motivation for some users'],
+    },
+  },
+  'LinkedIn': {
+    color: '#0A66C2', letter: 'Li', logo: 'https://logo.clearbit.com/linkedin.com', rating: 'average',
+    summary: {
+      works: ['Impact quantification on improvement suggestions ("2.2x more views") makes abstract benefits tangible and comparable', 'Jobs-to-be-done framing for Premium features reduces cognitive load when evaluating a complex product tier'],
+      watchout: ['Recommendations feel algorithmic and generic rather than personalized to the seller\'s actual situation', 'Growth tools being gated behind Premium creates a perception that meaningful improvement requires payment, not effort'],
+    },
+  },
+  'Mailchimp': {
+    color: '#FFE01B', letter: 'M', logo: 'https://logo.clearbit.com/mailchimp.com', rating: 'better', dark: true,
+    summary: {
+      works: ['Industry benchmark comparison gives sellers a genuine reference point beyond their own historical data', 'Timing improvement suggestions immediately post-send catches sellers at the moment of peak openness to feedback'],
+      watchout: ['Performance and action surfaces feel disconnected — insights from one campaign don\'t clearly inform setup for the next', 'Content optimizer is framed as an upsell in some contexts, eroding trust by blurring the line between help and sales'],
+    },
+  },
+  'Canva': {
+    color: '#00C4CC', letter: 'C', logo: 'https://logo.clearbit.com/canva.com', rating: 'better',
+    summary: {
+      works: ['Conversational AI removes the blank-canvas problem; pre-populated prompts make the first action obvious for any skill level', 'Variation chips and brand kit integration enable rapid, on-brand iteration without re-prompting from scratch'],
+      watchout: ['AI outputs require significant curation; sellers may spend more time refining than they save by generating', 'Chat history doesn\'t carry design decisions forward well — each message is interpreted somewhat in isolation'],
+    },
+  },
+  'Depop':    { color: '#E8272C', letter: 'Dp', logo: 'https://logo.clearbit.com/depop.com',    rating: 'poor', summary: { works: ['Potential revenue tile creates visible gap between current earnings and ceiling, motivating more listings', 'Period comparison on web stats directly answers "Am I improving?" with a toggle', 'Discounts and Bundles accessible directly from the main selling hub'], watchout: ['Analytics split between mobile (minimal) and web-only — most sellers never see the richer stats', 'No recommendations triggered by performance data — tools are plain navigation links, not contextual nudges', 'No benchmark context — earned amounts float without any comparison to similar sellers'] } },
+  'Substack': { color: '#FF6719', letter: 'Su', logo: 'https://logo.clearbit.com/substack.com', rating: 'average', summary: { works: ['Per-post source attribution (Direct / Substack / Email) tells writers which channels are driving reads', 'Individual reader engagement visibility turns analytics into relationship-building actions', 'Engagement depth (likes, restacks, shares) shown alongside pure reach numbers'], watchout: ['No growth recommendations or next steps — post analytics are informational only', 'No subscriber trend, churn signal, or benchmark — writers cannot assess the health of their list', 'Recommendations tab is for reader discovery, not creator growth guidance'] } },
+  'Patreon':  { color: '#FF424D', letter: 'Pa', logo: 'https://logo.clearbit.com/patreon.com',  rating: 'average', summary: { works: ['Membership Insights surface active members, new members, and cancellations in one view', 'Tier activity shows which tiers patrons upgrade or downgrade between, revealing pricing dynamics', 'Monthly earnings shown prominently on the creator profile for a fast performance read'], watchout: ['No growth trend or rate displayed — creators cannot tell if they are growing or plateauing', 'No benchmarking against comparable creators or category averages', 'No actionable recommendations for improving patron count or reducing churn'] } },
+  'Klaviyo':  { color: '#0D7A55', letter: 'Kv', logo: 'https://logo.clearbit.com/klaviyo.com',  rating: 'better', summary: { works: ['Deliverability health scorecards translate technical metrics into plain Healthy / Needs attention status', 'AI-generated insights appear inline with flagged metrics, directly connecting data to a recommended action', 'Action Center converts deliverability score problems into a checkable to-do list with "Mark done" CTAs'], watchout: ['Dashboard is data-dense and requires significant email marketing expertise to interpret fully', 'Insight quality depends on AI accuracy — advice can be generic for niche sending patterns', 'B2B complexity level is very high — most patterns do not translate to simpler creator or seller contexts'] } },
+  'Notion':   { color: '#2F2F2F', letter: 'Nt', logo: 'https://logo.clearbit.com/notion.so',    rating: 'average', summary: { works: ['AI assistant lowers the barrier to improvement with contextual suggestions surfaced in-document', 'Page analytics provide a basic view-count trend for creators sharing public content', 'AI action menu groups suggestions by mode (Think / Draft / Write) to reduce cognitive load'], watchout: ['Analytics are page-level only — no workspace-wide performance visibility', 'AI improvements are generic productivity helpers, not triggered by performance data', 'No concept of business performance — Notion analytics serve content auditors, not sellers'] } },
+  'Linear':   { color: '#5E6AD2', letter: 'Ln', logo: 'https://logo.clearbit.com/linear.app',   rating: 'better', summary: { works: ['Burndown chart makes sprint progress instantly legible across the whole team', 'At-risk project flags surface health issues before they become blockers', 'Cycle capacity view helps teams optimize workload before a sprint starts'], watchout: ['No automated recommendations — risk signals require human status updates to fire', 'Analytics serve engineering teams, not business performance or seller contexts', 'Cycle planning is fully manual — no suggestions for which issues to prioritize based on velocity data'] } },
+  'Wave':     { color: '#2B73B6', letter: 'Wv', logo: 'https://logo.clearbit.com/waveapps.com', rating: 'better', summary: { works: ['Advisor bar makes bookkeeping improvement tasks persistent and contextual alongside transaction data', 'Cash flow year-over-year comparison directly answers "Is my business doing better?" with numbers', 'Overdue invoices surfaced on the dashboard with immediate action paths to resolve them'], watchout: ['Dashboard is information-dense — new users may struggle to identify the most important metric', 'Advisor bar tasks are generic bookkeeping reminders, not personalized to the specific business situation', 'No forward-looking projections or automated alerts — fully reactive rather than predictive'] } },
+  'Whoop':    { color: '#1A1A1A', letter: 'Wh', logo: 'https://logo.clearbit.com/whoop.com',    rating: 'better', summary: { works: ['Coaching text appears inline with every metric, converting data into behavioral guidance without requiring extra navigation', 'Recovery and Strain dual-axis chart shows the relationship between exertion and readiness over time', 'WHOOP Coach CTA connects metric anomalies to a conversational AI explanation layer'], watchout: ['Jargon-heavy (HRV, RHR, respiratory rate) without sufficient plain-language explanation for new users', 'Coaching text can feel generic for experienced users who already know what the recommended actions mean', 'Metric density on the home screen is high — newcomers may feel overwhelmed before understanding what to optimize'] } },
+  'Oura':     { color: '#7B5EA7', letter: 'Or', logo: 'https://logo.clearbit.com/ouraring.com', rating: 'better', summary: { works: ['Readiness score decomposition into named contributors with labeled status makes the "why" immediately clear', 'Personalized coaching messages are specific (time of day, behavior tag, dietary observation) rather than generic platitudes', 'Weekly summary aggregates daily scores into a trend, answering "was last week good?" with a single chart'], watchout: ['Score contributors require understanding of what each biometric means — a steep learning curve for new users', 'Behavioral recommendations can feel opaque without explaining the causal mechanism clearly', 'No explicit action items — insights describe patterns but do not prescribe specific recovery steps'] } },
+  'eBay':        { color: '#E53238', letter: 'eB', logo: 'https://logo.clearbit.com/ebay.com', rating: 'average', summary: { works: ['Traffic source breakdown (Organic vs. Promoted) quantifies which channel is driving listing views, giving sellers a direct read on whether organic positioning or paid spend is more effective', 'Time-window filters on the Performance tab (Today / 7 days / 30 days / 90 days / Custom) let sellers set their own baseline period rather than being locked into a fixed view'], watchout: ['Performance and Traffic analytics are split across two separate tabs with no cross-linking — sellers must navigate between them to assemble a complete picture', 'No actionable recommendations triggered by performance data — the analytics are purely observational with no pathway from insight to next step'] } },
+  'Squarespace': { color: '#121212', letter: 'SS', logo: 'https://logo.clearbit.com/squarespace.com', rating: 'average', summary: { works: ['Analytics sidebar nav (Traffic, Engagement, Sales) gives each performance dimension a dedicated view with full chart depth and segment breakdowns', 'Purchase Funnel quantifies the drop-off between Visits, Viewed Product, Added to Cart, and Purchased — conversion leaks are visible with named percentages at each stage'], watchout: ['No contextual recommendations connecting metric readings to specific actions — analytics surfaces are informational but prescriptively silent', 'Traffic analytics focus on site visits rather than product-level performance, leaving sellers unclear on which listings or products are driving commercial interest'] } },
+  'Wix':         { color: '#FAAD00', letter: 'Wx', logo: 'https://logo.clearbit.com/wix.com', rating: 'average', dark: true, summary: { works: ['Analytics Highlights dashboard surfaces key stats (sessions, sales, orders) alongside a sessions trend chart and visitor engagement summary — multiple performance lenses on a single scrollable screen', 'Traffic source breakdown (Direct, Google, Wix email, social) is directly actionable — sellers know exactly which channel to invest in to drive more visits'], watchout: ['AI-powered "Ask Analytics AI" is available but positioned as a secondary search tool rather than an integrated insight layer surfaced alongside metric readings', 'No recommendations triggered by metric readings — the analytics describe what happened without guiding what sellers should do about it'] } },
+  'Gumroad':     { color: '#FF90E8', letter: 'Gu', logo: 'https://logo.clearbit.com/gumroad.com', rating: 'average', dark: true, summary: { works: ['Best Selling table on the home dashboard shows Sales, Revenue, Visits, Today, Last 7 days, and Last 30 days per product in one row — temporal comparison is built into the default view without requiring a separate report', 'Referrer breakdown includes per-source Conversion Rate alongside Views and Sales — creators can see not just which channels drive traffic but which channels actually convert to purchases'], watchout: ['Analytics are product-level but not actionable — no recommendation or insight layer connects referrer performance data to specific creator behaviors', 'MRR and Active Members are prominent KPIs on the Products header, but Gumroad provides no in-product guidance on how to grow these numbers'] } },
+};
+
+const RATING_LABEL = { better: 'Better UX', average: 'Average UX', poor: 'Poor UX' };
+
+const SCREENS = [
+  /* ─── SHOPIFY · JTBD 1 ─── */
+  { app:'Shopify', jtbd:1, title:'Aggregates all key metrics into one scannable view', desc:'Sales, sessions, returning customer rate, and cohort data are co-located so sellers can assess overall health without navigating between reports.', works:'Single view eliminates navigation across disconnected report pages', watchout:'No prioritization cues — all metrics carry equal visual weight', image:'https://mobbin.com/api/mcp/short/NpXqy0If', url:'https://mobbin.com/screens/7165300a-9783-41bf-89e3-ab7537ec6357' },
+  { app:'Shopify', jtbd:1, title:'Pairs each KPI with a sparkline for quick trend reading', desc:'Every metric shows a mini trend line alongside the number, letting sellers spot momentum shifts at a glance without opening a full chart.', works:'Trend signal is visible without an extra click into a full report', watchout:'Sparklines are too small to read precise values; directional only', image:'https://mobbin.com/api/mcp/short/FrHRt3iu', url:'https://mobbin.com/screens/dffd7667-9c49-45cc-aa22-73abb65f368d' },
+  { app:'Shopify', jtbd:1, title:'Drills into performance with period-over-period comparison', desc:'A full-width line chart with a comparison overlay and day-level granularity makes it easy to attribute changes to specific time windows.', works:'Comparison overlay makes deviations immediately visible without mental math', watchout:'Day-level granularity alone misses within-day patterns for high-volume sellers', image:'https://mobbin.com/api/mcp/short/h9AJwHa9', url:'https://mobbin.com/screens/c8f527be-1e5d-4e55-8426-a219a40921e1' },
+  { app:'Shopify', jtbd:1, title:'Breaks revenue down by source with visual proportion', desc:'A donut chart shows earnings split by channel, giving sellers a quick read on which parts of the business are driving the most income.', works:'Donut chart gives instant proportion sense; no table-reading required', watchout:'Mixes performance data with admin tasks (tax setup), diluting the focus', image:'https://mobbin.com/api/mcp/short/RGssrpzz', url:'https://mobbin.com/screens/19fe325a-4c39-4e6a-9af0-79b40706e229' },
+  { app:'Shopify', jtbd:1, title:'Connects behavior filters to quantified customer groups', desc:'Sellers can slice their audience by actions like email opened or order date to see how specific behaviors map to customer value.', works:'Live filter builder enables exploration without pre-defined segment templates', watchout:'Segment logic requires query-building skill most sellers lack', image:'https://mobbin.com/api/mcp/short/UiHCG2Xy', url:'https://mobbin.com/screens/cbd9ed39-4c87-4742-8234-422eadc4d0c3' },
+  /* ─── SHOPIFY · JTBD 2 ─── */
+  { app:'Shopify', jtbd:2, title:'Turns growth goals into a prioritized task list', desc:'Action items are ranked and shown with estimated setup times, reducing the cognitive effort of figuring out what to work on next.', works:'Time estimates reduce the "is this worth it?" friction before starting', watchout:'Priority order may not match the seller\'s actual business stage or goals', image:'https://mobbin.com/api/mcp/short/50QZtAz2', url:'https://mobbin.com/screens/bfa6753e-d301-403c-989e-f43cc01311ad' },
+  { app:'Shopify', jtbd:2, title:'Frames setup tasks as a progress-tracked goal', desc:'Wrapping specific tactics inside a visible milestone (0/6 done) creates forward momentum and makes the path to first sales concrete.', works:'Named milestone ("first 10 sales") makes the goal concrete and motivating', watchout:'Progress tracks task completion, not actual sales — the real outcome measure', image:'https://mobbin.com/api/mcp/short/MvpAWh3p', url:'https://mobbin.com/screens/2d10d3c8-5dd1-4664-aa63-97a2e421a037' },
+  { app:'Shopify', jtbd:2, title:'Guides sellers through setup in sequential stages', desc:'A progress bar across eight tasks organized by stage helps sellers know exactly where they are and what comes next without guessing.', works:'Stage-based grouping prevents sellers from skipping ahead before foundations are ready', watchout:'Eight tasks at once with no impact ranking makes prioritization hard', image:'https://mobbin.com/api/mcp/short/XPQ80Ay3', url:'https://mobbin.com/screens/f4163b32-e59e-445d-b988-70541f050297' },
+  { app:'Shopify', jtbd:2, title:'Mixes urgent alerts with proactive growth tasks', desc:'Surfacing a channel issue alongside the growth checklist ensures sellers handle blockers without losing the thread of their growth work.', works:'Keeps sellers in one place rather than forcing a context switch to handle issues', watchout:'Alert and growth framing compete — unclear which deserves attention first', image:'https://mobbin.com/api/mcp/short/793OW7Rg', url:'https://mobbin.com/screens/a99ccd13-1888-4421-9ea3-7e054a7730cc' },
+  { app:'Shopify', jtbd:2, title:'Reduces friction on common tasks with AI shortcuts', desc:'AI-generated product copy and curated brand examples lower the cost of getting started, making it easier to take the first step.', works:'AI draft removes blank-page paralysis on the most time-consuming listing task', watchout:'"Get inspired to launch" examples may feel irrelevant to established sellers', image:'https://mobbin.com/api/mcp/short/i9iBGnF8', url:'https://mobbin.com/screens/9dde6225-e705-40be-8b42-15be06c257d0' },
+  /* ─── SQUARE · JTBD 1 ─── */
+  { app:'Square', jtbd:1, title:'Leads with the numbers that matter most right now', desc:'Net sales, transactions, and averages are shown upfront with change indicators, giving sellers an immediate read on today\'s performance.', works:'Change indicators make period-over-period shifts scannable without mental comparison', watchout:'No drill-down from the home view; each metric is a dead end', image:'https://mobbin.com/api/mcp/short/REYcYunD', url:'https://mobbin.com/screens/08a51380-10d4-4453-9761-91f589f63e84' },
+  { app:'Square', jtbd:1, title:'Makes it easy to compare today against a custom baseline', desc:'A switchable chart with selectable comparison periods lets sellers define their own benchmark for what normal performance looks like.', works:'Switchable chart type lets sellers match the view to how they think about data', watchout:'Comparison is limited to fixed periods; no custom date range selection', image:'https://mobbin.com/api/mcp/short/RFctMVHV', url:'https://mobbin.com/screens/e20d0eeb-16ea-4964-b2f8-ba5528d59265' },
+  { app:'Square', jtbd:1, title:'Connects customer behavior to revenue outcomes', desc:'Returning customer rate, average spend, and top items are shown together, helping sellers see which relationships drive the most value.', works:'Co-locating loyalty and payment data gives a fuller picture than either alone', watchout:'Top items are shown without any benchmark — no way to know if performance is good', image:'https://mobbin.com/api/mcp/short/KST5PtmF', url:'https://mobbin.com/screens/d5e6ccec-cf93-4740-8695-78e0ccda6c24' },
+  /* ─── SQUARE · JTBD 2 ─── */
+  { app:'Square', jtbd:2, title:'Groups growth actions by the outcome they drive', desc:'Recommendations are organized by intent — attract customers, increase conversion, build loyalty — so sellers can match actions to their current priority.', works:'Outcome-based grouping reduces decision fatigue when choosing where to focus', watchout:'Recommendations are feature-level (pop-ups, coupons), not strategy-level — assumes sellers already know their goal', image:'https://mobbin.com/api/mcp/short/SJTOAgOK', url:'https://mobbin.com/screens/4430fa29-d147-4299-bd7c-9140d352048c' },
+  { app:'Square', jtbd:2, title:'Celebrates setup completion, then surfaces the next step', desc:'After confirming setup success with 7-day stats, the interface immediately points sellers toward growth activities as the logical next move.', works:'Timing the growth prompt at a moment of success creates positive momentum', watchout:'"Grow your business" is a broad destination, not a specific next action', image:'https://mobbin.com/api/mcp/short/cPSChdBQ', url:'https://mobbin.com/screens/8d9c3908-ff57-4fb7-bde1-684a6173b0b5' },
+  /* ─── STRIPE · JTBD 1 ─── */
+  { app:'Stripe', jtbd:1, title:'Surfaces retention patterns that aggregate metrics miss', desc:'A color-coded cohort heatmap shows how revenue from each month\'s customers persists over time, revealing churn signals that total numbers obscure.', works:'Cohort view reveals retention trends invisible in any aggregate revenue chart', watchout:'Requires familiarity with cohort analysis to interpret correctly; no guided explanation', image:'https://mobbin.com/api/mcp/short/zD2twvXP', url:'https://mobbin.com/screens/4259a600-938f-4ec1-a7a5-c76c56fe7ed2' },
+  { app:'Stripe', jtbd:1, title:'Lets sellers choose which metrics live front and center', desc:'A modular widget system means sellers can configure their home view around the numbers most relevant to their current business stage.', works:'Modular system means the dashboard can evolve as the business scales', watchout:'Default widgets may not suit all business types; meaningful use requires deliberate setup', image:'https://mobbin.com/api/mcp/short/0mYHsHf7', url:'https://mobbin.com/screens/2d11d64a-3af5-4815-9be2-64d8c1dc618b' },
+  { app:'Stripe', jtbd:1, title:'Decomposes revenue change into its contributing factors', desc:'Showing MRR as a waterfall of new, expansion, contraction, and churn tells sellers not just whether revenue grew, but why.', works:'Waterfall makes the "why behind the number" transparent without extra analysis', watchout:'Subscription-focused framing (MRR, churn) does not apply to one-time transaction sellers', image:'https://mobbin.com/api/mcp/short/uUX0qOJu', url:'https://mobbin.com/screens/bdac25c7-7910-42b5-b459-2c8fb930a04d' },
+  { app:'Stripe', jtbd:1, title:'Makes dashboard customization a first-class feature', desc:'A dedicated modal for adding or removing widgets signals that personalizing the view is expected behavior, not a buried advanced setting.', works:'Surfacing customization in a dedicated modal sets the expectation that it\'s for everyone', watchout:'No guidance on which widgets matter most at each growth stage', image:'https://mobbin.com/api/mcp/short/oPnqEjOg', url:'https://mobbin.com/screens/27d955fc-478f-42c8-8457-bf7109fd8c82' },
+  /* ─── TIKTOK · JTBD 1 ─── */
+  { app:'TikTok', jtbd:1, title:'Shows reach and engagement side by side with trend context', desc:'Views, profile visits, and interaction metrics are presented together with a 7-day chart so creators can see how reach translates to engagement over time.', works:'7-day trend chart contextualizes today\'s numbers without extra navigation', watchout:'Engagement metrics are shown without connecting them to commerce outcomes', image:'https://mobbin.com/api/mcp/short/AtP0qxIy', url:'https://mobbin.com/screens/860ce61f-c68c-4d9d-8701-49625cd305f0' },
+  { app:'TikTok', jtbd:1, title:'Reveals which surfaces are actually driving views', desc:'Breaking down views by source (For You, Search, Sound, etc.) tells sellers where their content is being discovered and which channels to lean into.', works:'Source breakdown surfaces channel-level insight that most analytics hide in aggregate', watchout:'Source data is descriptive, not prescriptive — no signal on which source to invest in', image:'https://mobbin.com/api/mcp/short/B4l56IrU', url:'https://mobbin.com/screens/5ab5c9e2-2125-4549-b5f2-2cc55e9e7a6b' },
+  { app:'TikTok', jtbd:1, title:'Maps audience behavior to actionable posting insights', desc:'Showing peak active times alongside demographic data helps sellers time their content and understand who they\'re actually reaching.', works:'Active times data is directly actionable — sellers immediately know when to post', watchout:'No way to cross-filter demographics by content type or engagement level', image:'https://mobbin.com/api/mcp/short/f7XUyBFV', url:'https://mobbin.com/screens/fc71d627-06c8-4653-b37e-9ffadaabc60a' },
+  { app:'TikTok', jtbd:1, title:'Shows exactly where viewers stop watching', desc:'A retention rate curve alongside average watch time and full-video completion makes clear which parts of a video hold attention and which lose it.', works:'Retention curve pinpoints the exact drop-off moment — rare and highly actionable', watchout:'Per-video only; no aggregate view across all content to identify patterns at scale', image:'https://mobbin.com/api/mcp/short/AQXoZpxd', url:'https://mobbin.com/screens/087743f7-6981-464b-89bf-c11c1172aced' },
+  { app:'TikTok', jtbd:1, title:'Puts the most-checked numbers one tap from the home screen', desc:'A compact metric strip on the creator home reduces the navigation cost of a quick performance check between posts.', works:'Satisfies the most common check-in without opening the full analytics section', watchout:'No differentiation between content that drove follows vs. content that drove views', image:'https://mobbin.com/api/mcp/short/ygPbq8LH', url:'https://mobbin.com/screens/0e0da7d7-deb4-481c-99a7-cc57a16e7fdd' },
+  /* ─── PINTEREST · JTBD 1 ─── */
+  { app:'Pinterest', jtbd:1, title:'Distills reach and engagement into a clean summary row', desc:'Six key metrics are shown at a glance with absolute numbers, giving sellers a fast read on whether content is reaching and resonating with their audience.', works:'Full awareness funnel (impressions → engaged audience) visible without scrolling', watchout:'Absolute numbers with no benchmarks make it impossible to judge if performance is strong', image:'https://mobbin.com/api/mcp/short/6HJTnLam', url:'https://mobbin.com/screens/22864846-19a6-4f9d-af14-fb6322a75cd9' },
+  { app:'Pinterest', jtbd:1, title:'Lets sellers plot two metrics together to find correlations', desc:'Selecting two lines simultaneously makes it easier to ask whether impressions and engagement move together — or diverge — over a given period.', works:'Simultaneous dual-metric view makes correlation questions answerable in one chart', watchout:'Limited to two metrics; sellers curious about a third must switch views', image:'https://mobbin.com/api/mcp/short/aAWXNKFC', url:'https://mobbin.com/screens/4e7bcea1-66a3-441b-8392-2175a9b5f7fc' },
+  { app:'Pinterest', jtbd:1, title:'Profiles the real audience vs. the whole Pinterest population', desc:'Comparing seller audience demographics against all Pinterest users highlights where their audience skews, informing both content and targeting decisions.', works:'Population comparison provides a meaningful baseline that raw audience data lacks', watchout:'Audience data reflects who is engaging, not necessarily who is buying', image:'https://mobbin.com/api/mcp/short/A5igX4JA', url:'https://mobbin.com/screens/9eee118e-e387-40ec-8289-b08d99b2b27f' },
+  { app:'Pinterest', jtbd:1, title:'Shows paid and organic performance in the same view', desc:'Placing ad spend and top organic pins side by side helps sellers judge whether their paid investment amplifies or just duplicates what already works organically.', works:'Side-by-side encourages sellers to treat paid and organic as complementary, not separate', watchout:'Ad summary is spend-focused with no ROI framing or attribution to organic', image:'https://mobbin.com/api/mcp/short/rjjYbNx3', url:'https://mobbin.com/screens/12741f07-5464-4a44-8334-c89cb0f7deb5' },
+  /* ─── INSTAGRAM · JTBD 1 ─── */
+  { app:'Instagram', jtbd:1, title:'Surfaces per-post performance without leaving the feed', desc:'Showing reach, impressions, and follows inline — without navigating to a separate analytics section — reduces the friction of checking how individual posts performed.', works:'Inline placement meets sellers in the natural moment of reviewing their content', watchout:'Metrics shown (impressions, follows) are one step removed from seller outcomes like traffic and sales', image:'https://mobbin.com/api/mcp/short/g3f7Gg9Y', url:'https://mobbin.com/screens/2aa65bdc-3417-4697-b993-29428e981150' },
+  /* ─── MAILCHIMP · JTBD 1 ─── */
+  { app:'Mailchimp', jtbd:1, title:'Anchors individual results to meaningful reference points', desc:'Displaying open and click rates against both the sender\'s own average and industry benchmarks tells sellers whether a result is genuinely good or just typical.', works:'Three-way comparison (this campaign / your average / industry) gives full context to judge results', watchout:'Benchmark is static at send time; no way to track improvement across subsequent campaigns', image:'https://mobbin.com/api/mcp/short/lzpMIZ3F', url:'https://mobbin.com/screens/cd6746bd-61a3-4f35-b14f-1149058b8844' },
+  /* ─── HUBSPOT · JTBD 2 ─── */
+  { app:'HubSpot', jtbd:2, title:'Organizes the workday around a structured action queue', desc:'A tasks queue paired with categorized guided actions (deal-related, prospecting) turns an open-ended day into a concrete sequence of next steps.', works:'Categorized action queue prevents all tasks from feeling equally urgent', watchout:'Without a clear "done for the day" signal, task accumulation can feel overwhelming', image:'https://mobbin.com/api/mcp/short/CEqIvfmw', url:'https://mobbin.com/screens/87dcd39f-a9aa-461e-9fb6-5aec87d0e017' },
+  { app:'HubSpot', jtbd:2, title:'Shows where deals are stalling in the pipeline', desc:'A stage funnel with per-step conversion rates makes bottlenecks visible, pointing sellers toward the specific stage that most needs their attention.', works:'Per-stage conversion rates make bottlenecks legible without any manual calculation', watchout:'Assumes a linear sales process; repeat-purchase or non-linear sellers may find it misleading', image:'https://mobbin.com/api/mcp/short/dKKEY4wk', url:'https://mobbin.com/screens/2f6e4cc1-1ebd-4fe9-82af-83f9b8296fef' },
+  { app:'HubSpot', jtbd:2, title:'Connects a metric reading directly to a recommended action', desc:'Rather than just flagging low activity, the tooltip tells sellers what to do about it — get new leads — making the insight immediately actionable.', works:'Closing the gap between "what" (low activity) and "so what" (get leads) in one tooltip', watchout:'Tooltip-triggered insights are passive; sellers who miss it miss the recommendation entirely', image:'https://mobbin.com/api/mcp/short/yUKQhFkp', url:'https://mobbin.com/screens/98f97f28-5cfb-4dd1-b8d2-b9547199fee3' },
+  /* ─── DUOLINGO · JTBD 2 ─── */
+  { app:'Duolingo', jtbd:2, title:'Uses loss aversion to prompt immediate action', desc:'Warning that a streak will reset today converts a passive reminder into an emotionally charged call to act before the day ends.', works:'Loss-aversion framing ("will reset") is more motivating than positive reinforcement alone', watchout:'Aggressive urgency can feel manipulative and create anxiety rather than motivation', image:'https://mobbin.com/api/mcp/short/3TxfniYK', url:'https://mobbin.com/screens/b0b48f26-f11a-4eb1-85a5-16a1e903fcf1' },
+  { app:'Duolingo', jtbd:2, title:'Anchors motivation to a self-chosen commitment level', desc:'Letting users pick their own streak target (7/14/30/50 days) creates a sense of ownership over the goal, making follow-through more likely.', works:'Self-selected target creates stronger commitment than an externally assigned one', watchout:'Four preset tiers may not match a user\'s actual availability; no custom input option', image:'https://mobbin.com/api/mcp/short/WWZB9mSN', url:'https://mobbin.com/screens/ec3f87db-e37f-40f3-8787-6bb9a1a7d7f8' },
+  { app:'Duolingo', jtbd:2, title:'Stacks multiple progress signals to sustain momentum', desc:'Daily XP bars, a weekly chart, and a leaderboard unlock threshold give users three simultaneous reasons to keep going across different time horizons.', works:'Three simultaneous progress frames address daily, weekly, and social motivation types', watchout:'XP is an activity proxy, not an outcome measure — strong for habit formation, weak for actual progress', image:'https://mobbin.com/api/mcp/short/T2e519UB', url:'https://mobbin.com/screens/11c27a8b-3267-495c-bacf-7e4d86413082' },
+  { app:'Duolingo', jtbd:2, title:'Turns past effort into a visible achievement worth protecting', desc:'A calendar heatmap of completed days makes the streak tangible and worth preserving, while Streak Society sets a concrete long-term aspiration.', works:'Heatmap makes the investment of past effort visible, raising the perceived cost of stopping', watchout:'Backward-looking view can feel demotivating for users who have already broken their streak', image:'https://mobbin.com/api/mcp/short/wNHbq7Mg', url:'https://mobbin.com/screens/32038de4-4f09-405a-866a-f9ee4580fdd2' },
+  /* ─── LINKEDIN · JTBD 2 ─── */
+  { app:'LinkedIn', jtbd:2, title:'Quantifies the value of each improvement to drive action', desc:'Attaching impact estimates ("2.2x more views") to specific suggestions makes the benefit of completing each step concrete and easy to prioritize.', works:'Impact numbers make the abstract benefit of each suggestion tangible and comparable', watchout:'Suggestions feel algorithmic and impersonal; no explanation of why this specific step was surfaced', image:'https://mobbin.com/api/mcp/short/fV5gb4l6', url:'https://mobbin.com/screens/c2313531-98a4-4bf3-b329-cc0a77fe43d1' },
+  { app:'LinkedIn', jtbd:2, title:'Presents features as solutions to recognized problems', desc:'Each card frames a Premium feature around a job-to-be-done rather than a feature description, meeting users where their motivation already is.', works:'Jobs-to-be-done framing reduces cognitive load when evaluating a complex product tier', watchout:'Hub is gated behind Premium, framing growth tools as a paid benefit rather than earned through effort', image:'https://mobbin.com/api/mcp/short/myo8oIC5', url:'https://mobbin.com/screens/84ecd7cf-7810-4e19-8950-3d2c3a5eccd7' },
+  /* ─── MAILCHIMP · JTBD 2 ─── */
+  { app:'Mailchimp', jtbd:2, title:'Converts best-practice compliance into a visible scorecard', desc:'Showing pass/fail status across text, links, and typography gives senders a structured way to improve content quality without needing expert knowledge.', works:'Itemized pass/fail gives actionable, specific feedback rather than a vague quality score', watchout:'Binary pass/fail hides nuance — a "pass" on text length doesn\'t mean the copy is good', image:'https://mobbin.com/api/mcp/short/142ClkoH', url:'https://mobbin.com/screens/5e02bb5b-7127-4752-874e-0c99d151c069' },
+  { app:'Mailchimp', jtbd:2, title:'Catches sellers at the moment they\'re most open to improvement', desc:'Surfacing a content improvement tool immediately after sending, when results anxiety is highest, makes the recommendation feel timely rather than pushy.', works:'Post-send timing catches sellers when their motivation to improve next time is at its peak', watchout:'Framed as an upsell in some contexts; erodes trust by blurring the line between help and sales', image:'https://mobbin.com/api/mcp/short/I0HlPg4G', url:'https://mobbin.com/screens/678fc2e6-82f1-45c5-9c0f-ba42c71e455a' },
+  { app:'Mailchimp', jtbd:2, title:'Keeps recent results visible alongside next-step tools', desc:'Anchoring the home screen to the most recent campaign, with an AI assistant nearby, makes it easy to reflect on what happened and decide what to do next.', works:'Recent campaign as anchor creates continuity and a natural review-then-act loop', watchout:'AI assistant suggestions are generic; repeat senders need context-aware, not one-size-fits-all, recommendations', image:'https://mobbin.com/api/mcp/short/vTMfbl67', url:'https://mobbin.com/screens/e4f4b1df-c14a-4a2e-8ec1-1a92b3b6903e' },
+  /* ─── CANVA · JTBD 2 ─── */
+  { app:'Canva', jtbd:2, title:'Replaces a blank canvas with a conversational starting point', desc:'Framing design creation as a chat prompt with pre-populated examples removes the cold-start problem and makes the first action obvious.', works:'Pre-populated prompts eliminate blank-page anxiety for any skill level', watchout:'Example prompts are consumer-focused (bakery, housewarming); less relevant for digital or B2B sellers', image:'https://mobbin.com/api/mcp/short/b0vGlf2c', url:'https://mobbin.com/screens/135c27da-b139-42bb-9405-43eb4cea106f' },
+  { app:'Canva', jtbd:2, title:'Makes iterative refinement as easy as one click', desc:'Pre-labeled variation chips alongside generated templates let sellers narrow in on the right direction without having to re-type a new prompt.', works:'Refinement chips enable iteration without abandoning or rewriting the original prompt', watchout:'Four templates at a time is limiting; sellers may want to explore more options before committing', image:'https://mobbin.com/api/mcp/short/Pwdfp5Ms', url:'https://mobbin.com/screens/3fa19277-9f74-4eff-83a6-d1255122b586' },
+  { app:'Canva', jtbd:2, title:'Keeps conversation and design output in the same view', desc:'Showing chat history alongside a live template preview means sellers can iterate verbally while watching the result update, closing the gap between intent and output.', works:'Live side-by-side eliminates the round-trip between generating and reviewing', watchout:'Chat history doesn\'t carry design intent forward; each message is interpreted somewhat in isolation', image:'https://mobbin.com/api/mcp/short/xTqXkwmI', url:'https://mobbin.com/screens/7402d410-e333-473c-9ea7-a9ee2c3796a7' },
+  { app:'Canva', jtbd:2, title:'Applies brand constraints to generated options automatically', desc:'Choosing a style (Minimal, Playful, Modern) propagates it across all templates simultaneously, letting sellers explore options without losing brand consistency.', works:'Style propagation makes comparison genuinely apples-to-apples across all generated options', watchout:'Style labels are subjective; sellers may not know which to pick without previewing each', image:'https://mobbin.com/api/mcp/short/H7mOgb5r', url:'https://mobbin.com/screens/6b900472-6e48-4ce6-815c-2945511223cf' },
+  /* ─── DEPOP · JTBD 1 ─── */
+  { app:'Depop', jtbd:1, title:'Seller overview: weekly stats, earnings, and active listings', desc:'The web Overview dashboard surfaces revenue and items sold as headline metrics with an active listings section below — giving sellers a complete shop status at a glance.', works:'Overview dashboard surfaces revenue and items sold before any detailed tables — giving sellers the key numbers without requiring navigation to Stats.', watchout:'The "You have no sold items yet" empty state is neutral — there\'s no guidance on what the seller could do to get their first sale.', image:'https://mobbin.com/api/mcp/short/yyrW2u62', url:'https://mobbin.com/screens/699d845d-84f8-438b-aae0-50e553076a11' },
+  { app:'Depop', jtbd:1, title:'30-day earnings chart with period comparison toggle', desc:'The web Stats page shows a line chart of earnings over selectable time windows (7d / 30d / 3m / 6m / 12m) with a toggle to compare against the previous equivalent period.', works:'Period comparison directly answers "Am I doing better or worse?" — the key benchmark question every seller has but most platforms never answer.', watchout:'Stats page is web-only and hard to find — most sellers use the mobile app and never encounter this level of analytical depth.', image:'https://mobbin.com/api/mcp/short/aFb0a0RM', url:'https://mobbin.com/screens/89830f70-0f7a-41ce-b98c-178bc6e87f32' },
+  { app:'Depop', jtbd:1, title:'Earnings chart with 30-day filter and sidebar navigation', desc:'The Stats page with the 30-day filter selected shows an earnings line chart with labeled axes — the sidebar gives Stats equal billing with Sold, Offers, and Selling in the navigation hierarchy.', works:'Sidebar navigation surfaces analytics as a first-class seller workflow rather than burying stats in account settings.', watchout:'The earnings chart shows raw numbers with no benchmark — a flat chart offers no guidance on whether zero earnings is normal for a new seller.', image:'https://mobbin.com/api/mcp/short/ae4cdtxh', url:'https://mobbin.com/screens/0f8cee63-2798-4929-94d4-f95e13e0656d' },
+  /* ─── DEPOP · JTBD 2 ─── */
+  { app:'Depop', jtbd:2, title:'Stats page with "Download Your Sales" export modal', desc:'A modal prompts the user to choose a date range and download a CSV of their sales data — accessible via a "Download sales" CTA on the Stats page.', works:'Offering a date-range CSV export meets data-savvy sellers where they are — letting them pull their numbers into external tools for deeper analysis.', watchout:'The export modal has no context about what fields are included — sellers must download and open the file to discover what data they actually get.', image:'https://mobbin.com/api/mcp/short/iCdoaShI', url:'https://mobbin.com/screens/1eb79b3d-7ce1-4d04-942f-3a358637fb76' },
+  /* ─── SUBSTACK · JTBD 1 ─── */
+  { app:'Substack', jtbd:1, title:'Post Reach tab: views trend with personal baseline comparison', desc:'The Post Reach tab overlays "This post" against "Your typical post" on a views trend chart, with Recipients, Delivery rate, and Views KPI tiles at the top.', works:'The "This post vs. your typical post" benchmark lets writers compare this post\'s reach to their own baseline — a far more relevant signal than population averages.', watchout:'The benchmark is based on historical averages, not a goal — there is no way to set a reach target and track progress toward it.', image:'https://mobbin.com/api/mcp/short/9CCepeTM', url:'https://mobbin.com/screens/8bc7dbe5-3b31-4fde-b14f-0bab5dab51d2' },
+  { app:'Substack', jtbd:1, title:'Post overview: new subscribers, views, recipients, and traffic sources', desc:'The post overview combines new subscribers gained, estimated revenue increase, total views, recipients, open rate, traffic sources, and links clicked — growth, delivery, and engagement in one summary.', works:'Showing new subscribers gained from a specific post connects content performance to audience growth — writers can see which posts are actually driving signups.', watchout:'Revenue impact shows as "—" for most posts — the metric creates expectations the data rarely fulfills, making the overview feel incomplete.', image:'https://mobbin.com/api/mcp/short/6aNqbVly', url:'https://mobbin.com/screens/c0a7799c-9de5-4cbe-82a9-1a6c8eaa33c5' },
+  { app:'Substack', jtbd:1, title:'Post Reach bar chart: delivery rate and views by send date', desc:'The Post Reach view shows a bar chart of Views over the days after publish, with KPI tiles for Recipients, Delivery rate, and Views at the top.', works:'Delivery rate alongside view count reveals whether a post underperformed because of delivery issues or because readers chose not to open — two very different root causes.', watchout:'The chart covers only days immediately after send — there is no view of long-tail traffic from later shares or search, which can be significant for evergreen posts.', image:'https://mobbin.com/api/mcp/short/69n1XWSJ', url:'https://mobbin.com/screens/ebebd080-bdfe-401b-b12c-3b484cb7a4ed' },
+  /* ─── SUBSTACK · JTBD 2 ─── */
+  { app:'Substack', jtbd:2, title:'Post stats: traffic sources with recipient-level engagement table', desc:'The post stats page shows a "How readers visited your post" bar chart (Desktop Web vs. Email) and a recipient-level table with opens, clicks, and device — detailed enough for direct relationship-building.', works:'Traffic source breakdown shows writers exactly which channel is driving reads — directly informing where to focus distribution effort.', watchout:'The per-recipient table shows opens and clicks but provides no aggregated insight — writers must manually scan rows to spot patterns in their audience.', image:'https://mobbin.com/api/mcp/short/QzNQSmsC', url:'https://mobbin.com/screens/1dedd3d5-2a71-41d5-a508-23a7332636b4' },
+  /* ─── PATREON · JTBD 1 ─── */
+  { app:'Patreon', jtbd:1, title:'Membership Insights: active, new, and cancelled members in one view', desc:'The Insights Membership tab shows active members, new members, and cancellations over the past 30 days with a breakdown chart — the three key health metrics for a membership business.', works:'Surfacing churn (cancelled) alongside growth (new) creates the full picture of membership health — not just an optimistic top-line number.', watchout:'No actionable context for any of the metrics — a creator with 4 cancellations does not know if that is normal, alarming, or tied to a specific post or event.', image:'https://mobbin.com/api/mcp/short/bggeVOxK', url:'https://mobbin.com/screens/60ee1322-a851-49e8-8c4c-c12738d48478' },
+  { app:'Patreon', jtbd:1, title:'Insights: tier activity, free trial data, and membership summary', desc:'The Insights page combines a Free trial activity table, a Tier activity panel showing upgrades and downgrades between pricing tiers, and a Membership summary sidebar — a layered view of subscriber movement.', works:'Tier upgrade/downgrade data shows which tiers members move between — giving creators empirical evidence of which tier transition paths exist in their community.', watchout:'A creator with 1 paid member sees the same view as one with 10,000 — the layout does not scale to offer more guidance at the earliest growth stage when it\'s most needed.', image:'https://mobbin.com/api/mcp/short/P7wxEfBb', url:'https://mobbin.com/screens/42fc3897-0daa-43b8-9dd4-62e7b58bf96e' },
+  /* ─── PATREON · JTBD 2 ─── */
+  { app:'Patreon', jtbd:2, title:'Insights > Posts: daily post views chart with top post list', desc:'The Posts tab of Insights shows "Post views today" as a headline number and a daily views chart, with a Top / Latest post list below showing recent drops with impressions, likes, and comments.', works:'Surfacing "Post views today" as a headline number plus a post list gives creators a daily feedback loop without navigating to individual post analytics.', watchout:'Views today is a raw number with no baseline — creators cannot tell whether 8 views is above or below their typical daily reach.', image:'https://mobbin.com/api/mcp/short/3p6RHPPG', url:'https://mobbin.com/screens/31fe3cce-1ad3-4675-b050-d4efa3c5b820' },
+  /* ─── KLAVIYO · JTBD 1 ─── */
+  { app:'Klaviyo', jtbd:1, title:'Email Dashboard: deliverability funnel from send to site activity', desc:'The Email Dashboard combines a deliverability section (recipient count, bounce rate, spam rate, unsubscribe rate trend lines) with an Email Funnel Summary showing delivery → open → click → active-on-site rates in one scrollable view.', works:'The funnel summary converts a wall of metrics into a sequential conversion view — senders can see exactly where their audience is dropping off.', watchout:'Requires significant email marketing expertise to interpret — terms like "active on site" and "deliverability" are not explained for less experienced senders.', image:'https://mobbin.com/api/mcp/short/vsn93SDu', url:'https://mobbin.com/screens/a5f58169-772f-4f14-bcf6-42ad6c5a90f0' },
+  { app:'Klaviyo', jtbd:1, title:'Campaign engagement chart with interactive per-date tooltip', desc:'The Campaign Overview shows an "Engagement over time" multi-series chart tracking Delivered / Opened / Clicked / Active on Site simultaneously, with an interactive tooltip that reveals per-metric recipient counts for any given date.', works:'Overlaying all four engagement metrics on one chart makes it easy to spot the exact date when engagement dropped — enabling precise root-cause investigation.', watchout:'The chart is visually complex with four overlapping series — at low recipient counts, lines cluster at the bottom and become difficult to read.', image:'https://mobbin.com/api/mcp/short/lyofQYTC', url:'https://mobbin.com/screens/23be6178-c3fa-4b5f-a4c5-54e9bb45090a' },
+  { app:'Klaviyo', jtbd:1, title:'Deliverability Score table: per-campaign health status at a glance', desc:'The Deliverability Score page shows recent campaigns and flows in a table with open rate, click rate, bounce rate, unsubscribe rate, and spam complaint rate, each labeled Healthy or Needs attention with color-coded status pills.', works:'Status labels translate raw percentages into a pass/fail signal — senders do not need to know industry benchmarks to understand whether their metrics are acceptable.', watchout:'Table design rewards experts who scan columns — less experienced senders may miss that "Needs attention" on click rate requires different remediation than "Needs attention" on bounce rate.', image:'https://mobbin.com/api/mcp/short/dH3zC6T9', url:'https://mobbin.com/screens/b8efb2ff-8912-4efd-9f49-b5d4301cc587' },
+  /* ─── KLAVIYO · JTBD 2 ─── */
+  { app:'Klaviyo', jtbd:2, title:'Action Center converts health score to a checkable remediation list', desc:'The deliverability Action Center sidebar surfaces two named steps — "Warm up your new sending infrastructure" and "Create a sending schedule" — each with a description, a link to learn more, and a "Mark done" CTA.', works:'Turning a score problem into a named, completable task list is the clearest JTBD 2 pattern in this audit: the system not only identifies the problem but prescribes the fix.', watchout:'Action items appear to be static and generic — the same checklist regardless of the specific issue flagged — reducing their perceived relevance for experienced senders.', image:'https://mobbin.com/api/mcp/short/vDBSNf9e', url:'https://mobbin.com/screens/a481e4f2-d3f4-4921-990b-4099bf7e006f' },
+  { app:'Klaviyo', jtbd:2, title:'AI insight appears inline with a flagged metric', desc:'On the Campaign Deliverability tab, after flagging click rate as "Needs attention," an AI-generated insight immediately follows: "Based on your click rate performance, focus sending to your most engaged subscribers."', works:'Placing AI recommendations directly below a flagged metric creates zero friction between diagnosis and prescription — the user does not need to navigate anywhere to understand the fix.', watchout:'The AI recommendation is generic — the same advice appears for any low click rate regardless of sender behavior, audience segment, or industry vertical.', image:'https://mobbin.com/api/mcp/short/4Oh6FuXQ', url:'https://mobbin.com/screens/b4bb4bc4-8025-4a87-80e1-c355203cacd9' },
+  { app:'Klaviyo', jtbd:2, title:'Send volume breakdown by inbox provider and country', desc:'The Campaign Deliverability tab drills into performance by email client (desktop vs. mobile opens) and by country (bar chart), surfacing segment-level insights that guide send-time and audience optimization decisions.', works:'Breaking performance down by inbox provider reveals actionable segments — a low Gmail open rate calls for a different fix than a low Outlook open rate.', watchout:'This level of detail is genuinely useful only for high-volume senders — small lists will see too few data points per segment for any conclusion to be statistically meaningful.', image:'https://mobbin.com/api/mcp/short/Jke4KZLt', url:'https://mobbin.com/screens/e6afd7b9-149a-4256-a77f-04b5a14fcd27' },
+  /* ─── NOTION · JTBD 1 ─── */
+  { app:'Notion', jtbd:1, title:'Page analytics panel: views and unique visitors over 28 days', desc:'A right-side analytics panel overlays a line chart of total views and unique views over 28 days, with a tooltip revealing per-day totals — the full analytics surface for a Notion page.', works:'Keeping analytics in a side panel rather than a separate page preserves context — creators can see their content and its performance at the same time.', watchout:'Analytics are limited to view counts — no engagement time, scroll depth, or referral source. For content performance, this is the minimum viable signal.', image:'https://mobbin.com/api/mcp/short/aHXWT62c', url:'https://mobbin.com/screens/03114971-c2cb-498e-961f-c621ca8d0ba3' },
+  { app:'Notion', jtbd:1, title:'AI usage dashboard tracks agent runs and member activity', desc:'The Credits settings page shows a monthly AI usage chart, a breakdown by agent builders and live agents, and a table of Custom Agents with run counts — a performance view for AI-powered workspace operators.', works:'Surfacing AI usage data helps teams understand which automations are running and whether they are consuming credit efficiently.', watchout:'This is a billing and usage screen, not a performance analytics screen — it tells teams what ran, not whether it helped achieve any goal.', image:'https://mobbin.com/api/mcp/short/Ue5mc9yf', url:'https://mobbin.com/screens/d8bab0ad-6e67-4c1d-a9a3-cbe5fdacbdf6' },
+  /* ─── NOTION · JTBD 2 ─── */
+  { app:'Notion', jtbd:2, title:'"Meet Notion AI" interstitial surfaces improvement capability chips', desc:'A full-page AI introduction modal offers five entry-point chips (Brainstorm ideas, Get help with code, Make a diagram, Make a table, Translate) with a single "Try it" CTA — the product\'s primary improvement offer to new users.', works:'Concrete action chips lower the activation energy for AI use — they give users a starting point rather than a blank text input.', watchout:'The chips are generic and product-capability-focused — they do not respond to the user\'s actual content or workspace state.', image:'https://mobbin.com/api/mcp/short/ch9I6zJV', url:'https://mobbin.com/screens/e380012a-27ec-4f00-96d7-e6bcdd376b45' },
+  { app:'Notion', jtbd:2, title:'AI chat opens with four suggested action prompts', desc:'The Notion AI chat interface opens with "Hi Alex! How can I help today?" and four suggested actions (Ask a question, Draft anything, Brainstorm ideas, What can Notion AI do?), framing the assistant as a general-purpose improvement tool.', works:'Suggested actions prevent the blank-canvas paralysis of an empty chat box — users have something to react to rather than having to articulate a request from scratch.', watchout:'Suggestions are static and generic — they do not reflect the user\'s current page, project status, or recent activity.', image:'https://mobbin.com/api/mcp/short/Cso1H91V', url:'https://mobbin.com/screens/722b5a96-45b4-4fe8-bccb-23dd19250e48' },
+  { app:'Notion', jtbd:2, title:'In-document AI action menu groups suggestions by thinking mode', desc:'The inline AI action menu groups options into Think (Summarize, Get help with code), Draft (Draft outline, Draft email, Draft meeting agenda), and Write (Make a table, Make a flowchart) — categorized by cognitive mode rather than feature name.', works:'Organizing AI actions by cognitive mode rather than feature name matches how users think about their need ("I need to draft something") rather than what the product does.', watchout:'The menu reflects generic document-editing actions — there is no connection to workspace performance, goals, or recent activity that would make the suggestions feel contextually relevant.', image:'https://mobbin.com/api/mcp/short/hm24mwC1', url:'https://mobbin.com/screens/24463aab-6ed4-447b-b6e4-0c7b38e2e200' },
+  /* ─── LINEAR · JTBD 1 ─── */
+  { app:'Linear', jtbd:1, title:'Cycle burndown chart with today marker and scope visibility', desc:'The active Cycle view shows a right-panel burndown chart spanning the sprint date range with a "Today" marker, alongside Scope / Started / Completed counts — a real-time sprint health snapshot.', works:'The burndown chart converts abstract issue counts into a visual slope — teams can see immediately whether they are ahead of or behind the ideal pace.', watchout:'Burndown charts require understanding the ideal pace line — teams who are new to the format may not know how to interpret a diverging slope.', image:'https://mobbin.com/api/mcp/short/A8k63WWh', url:'https://mobbin.com/screens/7da57206-eccd-41b6-9233-075508eb8402' },
+  { app:'Linear', jtbd:1, title:'Project milestone progress bars with cumulative chart', desc:'The Project detail view shows labeled milestone progress bars and priority status in the right panel alongside a cumulative progress chart over the project lifetime, giving teams a multi-resolution view of delivery health.', works:'Showing progress at both the milestone level and the cumulative level allows teams to see both near-term risk and long-term trajectory in one view.', watchout:'Progress bars show completion percentage but do not indicate whether the pace is sufficient to hit the deadline on time.', image:'https://mobbin.com/api/mcp/short/kxK5OHWM', url:'https://mobbin.com/screens/9c8e3907-b7af-48d6-ae2d-9b4ff700d433' },
+  { app:'Linear', jtbd:1, title:'Issue analytics panel: count by status segmented by priority', desc:'An issues list opens an analytics side panel with a bar chart of issue count by status (Todo) broken down by priority (High / Medium) — giving teams a real-time snapshot of backlog health.', works:'Segmenting issue counts by priority alongside status helps teams identify whether high-priority work is actually moving, not just whether total throughput is healthy.', watchout:'The chart is a snapshot — it does not show trend over time, so teams cannot tell whether the backlog is growing or shrinking.', image:'https://mobbin.com/api/mcp/short/udJAQR6P', url:'https://mobbin.com/screens/7b0d8523-02f7-471d-822d-75363975ca6b' },
+  /* ─── LINEAR · JTBD 2 ─── */
+  { app:'Linear', jtbd:2, title:'"At risk" flag surfaces project health signal for action', desc:'The project updates panel flags a project "At risk" with a team member comment ("We were supposed to kick off early this week"), surfacing a human-authored risk signal that prompts leadership to investigate and respond.', works:'Combining a status badge with a human comment makes the risk signal credible and specific — it is not just an automated flag but a grounded observation from someone close to the work.', watchout:'Risk flags depend entirely on team members proactively updating status — projects that are at risk but not labeled so are invisible to this system.', image:'https://mobbin.com/api/mcp/short/30Y9grf3', url:'https://mobbin.com/screens/87272cad-5ed8-4402-9971-7af7a286a981' },
+  { app:'Linear', jtbd:2, title:'Cycle capacity view quantifies available room before sprint starts', desc:'The Cycle 2 planning panel shows "10% of capacity" used with 24 days to start, giving a team lead the data needed to decide how much more work to pull in before the sprint begins.', works:'Making remaining capacity explicit as a percentage prevents both over-commitment (a common sprint failure mode) and under-loading, which wastes team potential.', watchout:'Capacity is measured in issue count, not effort — a sprint with 10% of issues loaded may still be fully committed if those issues are the highest-complexity ones.', image:'https://mobbin.com/api/mcp/short/9kUESeCB', url:'https://mobbin.com/screens/890e49aa-ac99-4fa8-b15c-d21076cbc045' },
+  /* ─── WAVE · JTBD 1 ─── */
+  { app:'Wave', jtbd:1, title:'Single-screen financial health: aging, income, and expense breakdown', desc:'The Wave dashboard combines a Payable & Owing aging table (current / 1–30 / 31–60 / 61–90 / 90+ days overdue), a Net Income year-over-year comparison, and an Expense Breakdown pie chart in one scrollable view.', works:'Combining cash health (aging), profitability (net income), and spending structure (expense breakdown) in one view gives small business owners a complete financial status report without navigating between reports.', watchout:'The density of three distinct visualizations can overwhelm new users — there is no prioritization of which panel to pay attention to first.', image:'https://mobbin.com/api/mcp/short/wx3rqAex', url:'https://mobbin.com/screens/66827c3b-728d-4592-86f3-2e7cab53630d' },
+  { app:'Wave', jtbd:1, title:'Cash flow inflow/outflow bar chart with 12 vs. 24 month toggle', desc:'The dashboard Cash Flow section shows a grouped bar chart of Inflow / Outflow / Net Change over a toggleable 12 or 24-month window alongside connected bank accounts and a Profit and Loss summary.', works:'The inflow/outflow grouping makes it immediately visible whether spending is trending toward or away from the income line — without requiring the user to read numbers.', watchout:'The 24-month view is visually cramped with monthly bars — the chart becomes hard to read at longer time horizons.', image:'https://mobbin.com/api/mcp/short/An7O5j1i', url:'https://mobbin.com/screens/202a094f-1eef-4462-919f-39b7fd113e05' },
+  { app:'Wave', jtbd:1, title:'Cash Flow report with year-over-year category comparison', desc:'The Cash Flow report shows a year-over-year comparison ($67.80 net cash increase, 2023 vs. 2022) with a detailed table broken down by category (Sales, Purchases, Inventory, Payroll, Sales Taxes) and trend arrows per line.', works:'Category-level year-over-year comparison reveals which specific area of the business improved or deteriorated — not just whether the top line went up.', watchout:'Trend arrows show direction but not magnitude — a small increase in Sales looks the same as a large one unless the user reads the numbers.', image:'https://mobbin.com/api/mcp/short/HzyCvrmo', url:'https://mobbin.com/screens/95745bce-9fb9-4a22-ad8e-207dd1e14975' },
+  /* ─── WAVE · JTBD 2 ─── */
+  { app:'Wave', jtbd:2, title:'Advisor bar: persistent bookkeeping task checklist alongside transactions', desc:'With the Advisor bar open, the Transactions page shows a "Bookkeeping tasks" checklist (Categorize transactions, Reconcile accounts) and a "Wave Advisor tips" section directly adjacent to the transaction list — improvement prompts contextualized to the work in progress.', works:'Placing improvement tasks adjacent to the data they apply to eliminates the navigation gap between "I see a problem" and "I know what to do about it."', watchout:'Bookkeeping tasks are generic reminders, not triggered by specific account conditions — a business with no uncategorized transactions sees the same prompt as one with hundreds.', image:'https://mobbin.com/api/mcp/short/pnPYSrEI', url:'https://mobbin.com/screens/69eeafd6-5dc1-4fff-a2f7-0fedb9812dbc' },
+  { app:'Wave', jtbd:2, title:'Advisor bar settings let users customize which improvement tasks appear', desc:'The "Advisor bar settings" side panel lets the user toggle individual bookkeeping task reminders (Categorize transactions, Reconciliation per account) on or off, giving owners control over which prompts remain persistent.', works:'Making improvement tasks customizable respects user expertise — an experienced bookkeeper can turn off reminders for tasks they handle routinely.', watchout:'Customization puts the burden on the user to know which tasks are important — a new business owner turning off "Reconcile accounts" may not realize the downstream cost.', image:'https://mobbin.com/api/mcp/short/X0yd0G49', url:'https://mobbin.com/screens/2c702213-935e-44cc-b82f-7472f6d47847' },
+  { app:'Wave', jtbd:2, title:'Dashboard surfaces overdue invoices alongside "Things You Can Do"', desc:'The dashboard scroll view shows overdue invoices and bills at the top, then a "Things You Can Do" section with quick-action links, then a Profit & Loss chart — layering performance data with next-step prompts in a single continuous surface.', works:'Placing "Things You Can Do" between the problem (overdue invoices) and the context (P&L) creates a natural action funnel: see the issue, act on it, then understand the impact.', watchout:'"Things You Can Do" links are generic across all business states — the same actions appear whether the business is healthy or in financial difficulty.', image:'https://mobbin.com/api/mcp/short/KlQjUguO', url:'https://mobbin.com/screens/b0779fe4-db8c-486e-a5d6-bcccf1828216' },
+  /* ─── SQUARESPACE · JTBD 1 ─── */
+  { app:'Squarespace', jtbd:1, title:'Traffic overview: visits, bounce rate, and source breakdown', desc:'The Traffic page surfaces visits, bounce rate, unique visitors, and pageviews with month-over-month change indicators, a selectable time-series chart, and top-sources and device breakdowns — a complete traffic picture in a single scrollable view.', works:'Four headline KPIs with % change plus top sources on one page eliminates the need to navigate between separate reports to understand traffic composition', watchout:'Traffic metrics are site-wide, not product-level — high traffic to non-commerce pages inflates numbers and gives sellers no direct signal on which listings are driving commercial interest', image:'https://mobbin.com/api/mcp/short/gLzMgXPU', url:'https://mobbin.com/screens/1bbac7ae-bd7c-4b6f-9145-13c1bb04451d' },
+  { app:'Squarespace', jtbd:1, title:'Sales dashboard: full commerce KPI row', desc:'The Sales analytics view leads with a six-metric KPI row — Revenue, Units Sold, Checkouts, Conversion Rate, AOV, and RPV — each with a period-over-period change indicator, giving sellers a complete commercial health summary before any chart.', works:'Six sales KPIs in a single header row surfaces more commercial depth than most e-commerce dashboards show at any navigation level', watchout:'KPI totals with % change have no drill-down context — a drop in conversion rate has no in-view path to understanding which product or traffic source caused it', image:'https://mobbin.com/api/mcp/short/iCYU26wa', url:'https://mobbin.com/screens/87e6725d-f197-4fc3-b901-f8acfcac73b6' },
+  { app:'Squarespace', jtbd:1, title:'Home: performance summary with Site Visits sparkline', desc:'The Squarespace home surfaces a "Track your performance" section with Top Traffic Source, a Site Visits count with sparkline, and Top Visit Location — the three most-checked performance signals accessible without navigating to the Analytics section.', works:'Embedding a visits sparkline and top traffic source on the home page answers the most common performance check-in with zero additional navigation', watchout:'Dashboard widgets are informational snapshots — they do not link directly into the full Analytics view, so sellers who want to investigate further must navigate separately', image:'https://mobbin.com/api/mcp/short/VIYhR4OU', url:'https://mobbin.com/screens/c31bbf92-170e-4042-81e1-ccfc636269de' },
+  /* ─── WIX · JTBD 1 ─── */
+  { app:'Wix', jtbd:1, title:'Analytics Highlights: stats, sessions chart, and visitor context', desc:'The Analytics Highlights screen combines key stats (bookings, sessions, total sales, orders), a sessions-over-time chart, visitor engagement summaries, and a "Find stats with AI" panel — a comprehensive overview dashboard with multiple performance dimensions stacked in one scroll.', works:'Multiple performance lenses (traffic, sales, engagement) in a single scrollable dashboard reduces the navigation cost of a quick performance check', watchout:'The AI-powered "Find stats with the help of AI" panel is positioned as a secondary tool rather than an integrated insight, so sellers who miss it lose the most differentiated analytical feature on the page', image:'https://mobbin.com/api/mcp/short/S25e8ThK', url:'https://mobbin.com/screens/ddb749b0-c243-4272-91bb-1e0ceb702123' },
+  { app:'Wix', jtbd:1, title:'Traffic Overview: sessions, visitor segments, and device breakdown', desc:'The Traffic Overview surfaces site sessions and unique visitors with period-over-period change, a sessions-over-time chart, new vs. returning visitor split, sessions by device, and a Traffic Insights panel — four distinct dimensions of traffic health on a single page.', works:'New vs. returning visitor split and sessions-by-device chart give sellers actionable signals for deciding where to invest in audience acquisition and content format', watchout:'Traffic data is visitor-level — high traffic to non-product pages inflates the numbers without indicating which listings or products are attracting commercial intent', image:'https://mobbin.com/api/mcp/short/gRUNb4kX', url:'https://mobbin.com/screens/d77f16b0-a7d7-4926-8e8c-79687550e945' },
+  { app:'Wix', jtbd:1, title:'Sales Overview: top selling items table with revenue and share', desc:'The Sales Overview leads with a Top Selling Items table showing item name, quantity sold, share of total sales, period-over-period change, and gross sales — a fast read on which products carry the revenue without opening individual product reports.', works:'Showing each item\'s % of total sales and period-over-period change in one row gives sellers the two numbers needed to spot which products are growing and which are declining', watchout:'The table ranks only top performers — there is no view of underperforming products that might benefit from promotion, and no recommendations are triggered by a product with declining share', image:'https://mobbin.com/api/mcp/short/pDbP4RWn', url:'https://mobbin.com/screens/5de361c3-be44-4536-9efe-c824f9f28197' },
+  /* ─── GUMROAD · JTBD 1 ─── */
+  { app:'Gumroad', jtbd:1, title:'Home: best selling table with temporal revenue breakdown', desc:'The Gumroad home dashboard centers on a "Best Selling" table showing each product with Sales, Revenue, Visits, Today, Last 7 days, and Last 30 days in a single row — temporal comparison is a first-class default rather than a filter requiring a separate report.', works:'Built-in Last 7 / 30-day columns on every product row make trend comparison instant — creators do not need to navigate into individual product analytics to see whether performance is changing', watchout:'For established sellers, the "Getting started" checklist above the performance table occupies primary visual real estate even after all onboarding tasks are complete', image:'https://mobbin.com/api/mcp/short/4egeOKSm', url:'https://mobbin.com/screens/11e8ca62-05d0-4225-a0a8-c27b381ac134' },
+  { app:'Gumroad', jtbd:1, title:'Analytics: referrer breakdown with per-source conversion rates', desc:'The Gumroad Analytics referrer table shows each source with Views, Sales, Conversion Rate, and Total revenue — surfacing not just where traffic comes from but which channels actually convert, giving creators a direct signal on distribution ROI.', works:'Per-source conversion rate alongside views and sales is a rare combination — creators can see that a small channel converting at 25% may be more valuable than a large channel converting at 0%', watchout:'Referrer data is retrospective with no recommendations — a creator who sees their own website converts well but drives few views has no in-product guidance on how to increase that channel\'s traffic', image:'https://mobbin.com/api/mcp/short/Zgs7LQdt', url:'https://mobbin.com/screens/cdcebe87-c8ff-4efa-b26f-ef17b09773be' },
+  { app:'Gumroad', jtbd:1, title:'Products: full business KPI header with revenue, customers, and MRR', desc:'The Products page leads with a four-metric KPI header — Total Revenue, Customers, Active Members, and MRR — displayed persistently before the product list, giving creators their complete business health summary at a glance each time they review their catalog.', works:'Surfacing MRR and Active Members alongside Revenue and Customers in the persistent header converts a product list page into a business health dashboard', watchout:'All four KPIs default to $0/0 for new creators with no coaching on what actions would move them — the empty state is a missed onboarding opportunity for the most important metrics in the creator\'s dashboard', image:'https://mobbin.com/api/mcp/short/deXIyF38', url:'https://mobbin.com/screens/e114a2dc-0345-4e2f-8477-b68a5fddebac' },
+];
+
+const MOBILE_SCREENS = [
+  /* ─── SHOPIFY ─── */
+  { app:'Shopify', title:'Analytics today: sales chart', works:'Real-time "Today" view gives sellers an immediate read on whether the current day is on track — no lag, no daily refresh needed.', watchout:'The "today" view is too granular for strategic decisions — sellers can become addicted to checking real-time numbers rather than acting on slower-moving trends that actually matter.', image:'https://mobbin.com/api/mcp/short/FfHBQ7Jb', url:'https://mobbin.com/screens/6122bfe2-f660-4354-8c46-545ed12c96ba' },
+  { app:'Shopify', title:'Conversion rate and orders funnel', works:'The funnel from sessions to orders makes the leaky pipe visible — sellers can see exactly which step in the buying process is losing customers.', watchout:'The funnel is a diagnostic, not a prescription — Shopify shows where drop-off happens but does not suggest what the seller could change to fix it.', image:'https://mobbin.com/api/mcp/short/oggFD1Dt', url:'https://mobbin.com/screens/94137b00-2483-499d-9d28-dcb8e8661324' },
+  { app:'Shopify', title:'Live view dashboard', works:'The live visitor map creates a sense of real-time business activity — seeing people on your store right now is motivating in a way no historical chart can match.', watchout:'Live views are rarely actionable — sellers cannot intervene on individual visitor sessions, so real-time data functions as entertainment rather than a performance tool.', image:'https://mobbin.com/api/mcp/short/cm1YSqfx', url:'https://mobbin.com/screens/9f594322-85e5-4bba-a819-e4f5cb99b8b3' },
+  /* ─── STRIPE ─── */
+  { app:'Stripe', title:'Home: gross volume chart', works:'Gross volume as the homepage headline gives sellers an instant top-line read — the most important number in a payments business is the first thing visible.', watchout:'Gross volume without net revenue or fee breakdown obscures actual take-home — high volume with high refund rates looks identical to a healthy business.', image:'https://mobbin.com/api/mcp/short/k4KI1H88', url:'https://mobbin.com/screens/e345975a-5113-4ffd-8b71-1abc1481379e' },
+  { app:'Stripe', title:'Charts and metrics picker', works:'A configurable metrics picker lets sellers surface the chart most relevant to their current question rather than scrolling through a fixed layout.', watchout:'More flexibility means more setup time — sellers who just want to see key numbers must configure the view before getting value, adding friction at the start of every session.', image:'https://mobbin.com/api/mcp/short/DqOYouzr', url:'https://mobbin.com/screens/5ca86e60-d308-4270-8580-c6e301fd1e49' },
+  /* ─── TIKTOK ─── */
+  { app:'TikTok', title:'TikTok Studio home', works:'TikTok Studio surfaces video performance, followers, and monetization status on one screen — creators get a dashboard without leaving the app they already have open.', watchout:'The home mixes content management and analytics without a clear hierarchy — creators may not know whether to focus on what performed or what to post next.', image:'https://mobbin.com/api/mcp/short/5Fgzd4al', url:'https://mobbin.com/screens/e8c7cb68-6a2c-4281-9cfc-46237b1e80d8' },
+  { app:'TikTok', title:'Analytics key metrics overview', works:'Leading with followers gained and profile views alongside video views gives creators a picture of both content performance and account growth in one glance.', watchout:'Metrics are displayed as flat numbers without trend context — creators cannot tell from this view whether growth is accelerating or stalling.', image:'https://mobbin.com/api/mcp/short/O0YHu0Wt', url:'https://mobbin.com/screens/ad1f5005-6af2-4946-955a-0ee0766e5b6f' },
+  { app:'TikTok', title:'Viewer insights', works:'Audience demographics (location, age, active hours) tell creators who is watching, which directly informs what to create and when to post for maximum reach.', watchout:'Demographic data is only useful in aggregate — creators with small audiences may see misleading percentages based on very few data points.', image:'https://mobbin.com/api/mcp/short/m0MJmujt', url:'https://mobbin.com/screens/82e459ef-62ae-42c4-a402-ba1246b68777' },
+  /* ─── PINTEREST ─── */
+  { app:'Pinterest', title:'Impressions chart by device', works:'Device breakdown tells creators whether their audience browses on mobile or desktop — directly relevant to image format and text legibility decisions.', watchout:'Device split is interesting context but rarely the lever that moves pin performance — creators may optimize for device without addressing the content quality gaps that actually limit reach.', image:'https://mobbin.com/api/mcp/short/iZDVswpp', url:'https://mobbin.com/screens/3e45378c-cf4d-4500-a141-7e825970a59a' },
+  { app:'Pinterest', title:'Analytics overview with metric cards', works:'Consolidating impressions, saves, and link clicks into metric tiles makes it easy to see which type of engagement the account is driving without drilling into reports.', watchout:'No normalization by posting frequency — a creator who posts five times as often naturally gets more impressions, but the overview does not reveal whether individual pins are improving.', image:'https://mobbin.com/api/mcp/short/eUO0sM4q', url:'https://mobbin.com/screens/8e0f1c8b-8585-4045-bd03-81e0e70ce077' },
+  { app:'Pinterest', title:'Pin stats with promotion CTA', works:'Surfacing a Promote CTA directly on a pin\'s stats page creates a natural upgrade path — see what organically performed well and immediately amplify it.', watchout:'The Promote CTA appears regardless of pin performance — a pin with low organic traction is unlikely to benefit from paid promotion, but Pinterest does not filter or advise.', image:'https://mobbin.com/api/mcp/short/vTMKvLWU', url:'https://mobbin.com/screens/4fbb17ea-2c8d-497c-bf5e-b4ad5ec64c87' },
+  /* ─── INSTAGRAM ─── */
+  { app:'Instagram', title:'Professional dashboard', works:'The Professional Dashboard consolidates reach, interactions, and followers in one view accessible from the profile tab — analytics stay within the same app creators use to post.', watchout:'The dashboard is only visible from the profile — creators who open Instagram to browse their feed have no persistent analytics nudge in their workflow.', image:'https://mobbin.com/api/mcp/short/5EVFGoUt', url:'https://mobbin.com/screens/0d174be0-166d-4d53-8e72-6d4a85a8beef' },
+  { app:'Instagram', title:'Insights overview', works:'Breaking the overview into Reach, Accounts engaged, and Total followers gives creators three distinct performance lenses — not just how many people saw content but how many acted.', watchout:'The time window defaults to 7 days — creators who don\'t actively adjust it may be comparing very different periods without realizing it.', image:'https://mobbin.com/api/mcp/short/V9Rb7NVO', url:'https://mobbin.com/screens/053b38ab-2406-4a40-9867-3523ea59d302' },
+  { app:'Instagram', title:'Insights overview (empty state)', works:'The empty state explains why there\'s no data yet (need 100 followers) and sets a specific milestone — turning a dead end into a motivating threshold.', watchout:'The 100-follower threshold is a cliff rather than a gradient — creators get no analytics at all until they cross it, leaving early-stage accounts with no signal to improve on.', image:'https://mobbin.com/api/mcp/short/RM2GzOP4', url:'https://mobbin.com/screens/ef0b8a21-34cc-49a2-a3df-e6da69ae4aa3' },
+  /* ─── DUOLINGO ─── */
+  { app:'Duolingo', title:'Streak calendar view', works:'The calendar makes the streak visual as a spatial pattern — a row of marked days creates a strong commitment that one gap would visibly break.', watchout:'The calendar tracks consistency but not quality — a learner who completes one trivial lesson a day looks identical to one who does a rigorous 30-minute session.', image:'https://mobbin.com/api/mcp/short/TnS3FkzP', url:'https://mobbin.com/screens/b7578a37-b5f0-4921-a9c2-3b42bad94eb9' },
+  { app:'Duolingo', title:'Streak count and milestone', works:'A prominent streak number with milestone markers turns daily practice into a visible personal record worth protecting — loss aversion makes streaks surprisingly sticky.', watchout:'Streak preservation can become the goal rather than learning — users may rush through the minimum required lesson just to keep the number alive.', image:'https://mobbin.com/api/mcp/short/gQ7MbRGv', url:'https://mobbin.com/screens/801382ea-9bcc-4fd6-b461-a14b36161486' },
+  { app:'Duolingo', title:'Streak urgency nudge', works:'The streak-at-risk message creates immediate loss aversion at the exact moment a user is most likely to skip — one of the most effective behavioral triggers in consumer apps.', watchout:'Overusing urgency nudges trains users to dismiss them — a learner who receives the warning daily will eventually stop responding to it.', image:'https://mobbin.com/api/mcp/short/nrLu8Xjj', url:'https://mobbin.com/screens/7aee41f9-595c-4793-91b5-e68c4612495e' },
+  /* ─── LINKEDIN ─── */
+  { app:'LinkedIn', title:'Dashboard: profile and post views', works:'Profile views and post impressions on the same screen let creators see whether content is converting curiosity into profile interest — a connection most analytics platforms separate.', watchout:'Both metrics are counts without context — LinkedIn does not show how they compare to peers or to previous periods on this screen.', image:'https://mobbin.com/api/mcp/short/BIaBRKFz', url:'https://mobbin.com/screens/6434ccc7-ea80-4432-8e1d-3398f3ccbdac' },
+  { app:'LinkedIn', title:'Home with post impressions banner', works:'Surfacing post performance as a banner in the home feed means creators see analytics without leaving the surface they use to browse — zero navigation cost.', watchout:'The impression banner appears after posting and then fades — creators who don\'t check immediately lose the visibility window and may never revisit post performance.', image:'https://mobbin.com/api/mcp/short/BDBhirkm', url:'https://mobbin.com/screens/77159fd5-16dd-4c0c-b97a-599c6ea09ad3' },
+  { app:'LinkedIn', title:'Suggested profile improvements', works:'Concrete improvement suggestions with clear labels (add featured section, add skills) give creators actionable steps to increase discoverability rather than vague coaching.', watchout:'Suggestions are static and completion-focused rather than performance-triggered — the same tips appear regardless of whether the profile is already getting strong reach.', image:'https://mobbin.com/api/mcp/short/YSC601pB', url:'https://mobbin.com/screens/3b0b08f1-02f5-44c0-920f-286521e7c4fe' },
+  /* ─── MAILCHIMP ─── */
+  { app:'Mailchimp', title:'Campaign report: opens and clicks', works:'Leading with opens and clicks as the two headline metrics mirrors how email marketers think about performance — the first screen answers the most common question immediately.', watchout:'Opens are increasingly unreliable since iOS Mail Privacy Protection inflates open rates — showing them as a primary metric can mislead senders about true engagement.', image:'https://mobbin.com/api/mcp/short/tWNnm5Y7', url:'https://mobbin.com/screens/a23af9bd-de7f-430d-8292-820b170a7410' },
+  { app:'Mailchimp', title:'Campaign report: full metrics', works:'Surfacing unsubscribes and bounces alongside engagement gives a complete picture of campaign health — not just who engaged but who was pushed away.', watchout:'Metrics are presented as flat numbers without benchmarks — a 2% unsubscribe rate looks the same as a 0.1% rate unless the sender already knows industry norms.', image:'https://mobbin.com/api/mcp/short/vht9KJSI', url:'https://mobbin.com/screens/93b4702c-8fba-42a6-b195-4901467fc516' },
+  { app:'Mailchimp', title:'Onboarding: watch your business grow', works:'Framing the product around a business outcome ("grow") rather than a feature ("send emails") sets the right expectation — the product is positioned as growth infrastructure.', watchout:'The onboarding promise is aspirational but disconnected from what the user must do next — there\'s no clear first step between "watch your business grow" and "send your first campaign."', image:'https://mobbin.com/api/mcp/short/1LJJcQhL', url:'https://mobbin.com/screens/01a61719-f588-4d15-9dec-e087df7acb82' },
+  /* ─── CANVA ─── */
+  { app:'Canva', title:'Design insights: views chart', works:'Showing view counts per design lets creators identify which specific designs are resonating, not just an aggregate account number.', watchout:'Views measure passive exposure, not engagement intent — a design with 500 views and 0 saves may be getting less valuable attention than one with 50 views and 20 shares.', image:'https://mobbin.com/api/mcp/short/QGOjbXXb', url:'https://mobbin.com/screens/379b6a33-822a-4992-95e3-dd47c570981d' },
+  { app:'Canva', title:'Design insights: empty state', works:'The empty state prompts the creator to publish a design to start seeing data — turning a blank screen into a motivating call to action with a clear next step.', watchout:'No guidance on what types of designs tend to get views — creators get no starting point for what to create to earn an engaged audience.', image:'https://mobbin.com/api/mcp/short/UX1YlNB8', url:'https://mobbin.com/screens/c735ca14-0be0-4d64-ab17-d8462ba80bb1' },
+  { app:'Canva', title:'Insights time window selector', works:'Time window selection directly on the insights screen lets creators compare performance across periods without navigating away — reducing friction for comparative analysis.', watchout:'Creators who don\'t know to look for the selector will be stuck with the default window and may draw incorrect conclusions from a period that doesn\'t represent typical performance.', image:'https://mobbin.com/api/mcp/short/7j7NqzG2', url:'https://mobbin.com/screens/9d860aea-fa35-41d7-9953-94c9289b7cdb' },
+  /* ─── DEPOP ─── */
+  { app:'Depop', title:'Seller shop: earnings and listings', works:'Pairing earnings and active listing count on the shop screen gives sellers a quick ratio of inventory to revenue — more listings should mean more earnings, and the gap is visible.', watchout:'The shop view is buyer-facing — earnings and listing stats are secondary to the browsing experience, so performance data is easy for sellers to overlook.', image:'https://mobbin.com/api/mcp/short/PeFoNjfs', url:'https://mobbin.com/screens/029b131a-f173-4a5c-adb0-5c6663c46d2b' },
+  { app:'Depop', title:'Empty seller shop', works:'The empty state clearly communicates what the shop will look like once items are added — reducing uncertainty for new sellers about whether their setup is correct.', watchout:'No coaching layer for new sellers — those who see zero items get no guidance on pricing, photography, or what to list first to get their first sale.', image:'https://mobbin.com/api/mcp/short/WHARleLc', url:'https://mobbin.com/screens/d980711c-a3c7-4594-894e-a9796384c6db' },
+  { app:'Depop', title:'Payout to-do list', works:'Framing payout setup as a checklist with a clear payoff (receiving funds) motivates completion — each step has an obvious downstream benefit visible on the same screen.', watchout:'The to-do list is a one-time setup event, not an ongoing improvement loop — after completion there\'s no equivalent guidance for growing sales.', image:'https://mobbin.com/api/mcp/short/LdFfapao', url:'https://mobbin.com/screens/afad4038-a514-4d87-b987-17667066122e' },
+  { app:'Depop', title:'Earned vs. potential revenue: shop header', works:'Juxtaposing actual and potential revenue motivates more listings — the gap itself is the implicit call to action.', watchout:'No trend context, no explanation of how potential revenue is calculated, and no benchmark — the numbers sit in isolation.', image:'https://mobbin.com/api/mcp/short/QaaoltrE', url:'https://mobbin.com/screens/c20367ad-295b-4353-bc6b-e06d74603ca9' },
+  { app:'Depop', title:'"Start discounting your items to boost sales" nudge', works:'One of the only performance-triggered recommendations in Depop — it names a specific action and connects it to a tangible outcome (more sales).', watchout:'Surface-level: no impact estimate, no explanation of how discounts affect visibility, and no link to the seller\'s specific listings.', image:'https://mobbin.com/api/mcp/short/HR7UJHeH', url:'https://mobbin.com/screens/eaed8b91-4f4c-4879-a406-e05cbea86031' },
+  /* ─── SUBSTACK ─── */
+  { app:'Substack', title:'Post stats: views and traffic sources', works:'Traffic source breakdown (email, web, app) tells writers exactly where their readers are coming from — a key input for deciding whether to invest in SEO, social, or subscriber growth.', watchout:'Traffic sources are post-level, not trend-level — writers cannot easily see whether their email open rate is improving over time or whether web traffic is growing.', image:'https://mobbin.com/api/mcp/short/FKdZUqS0', url:'https://mobbin.com/screens/f13dd8d5-119b-4be3-98b0-0806ad80d908' },
+  { app:'Substack', title:'Post stats: engagement counters', works:'Displaying likes, comments, and shares on the same screen as views shows writers the engagement rate rather than just the reach — high views and no engagement is a different signal than both being high.', watchout:'Engagement counters have no benchmark or comparison to previous posts — a writer cannot tell whether 12 likes is good or bad without manually reviewing prior posts.', image:'https://mobbin.com/api/mcp/short/0NFQYuv0', url:'https://mobbin.com/screens/14659cca-555c-4d55-b6cd-82c404c9722b' },
+  { app:'Substack', title:'Post stats: no data yet', works:'The "no data yet" state explains the lag honestly — setting the expectation that data takes time reduces false alarm anxiety for new writers who may worry their post failed.', watchout:'No indication of when data will appear or what threshold triggers it — writers are left guessing how long to wait before the screen becomes useful.', image:'https://mobbin.com/api/mcp/short/2TY6nO7D', url:'https://mobbin.com/screens/a97b5e3c-39f5-45a5-988e-7271f102b3a0' },
+  { app:'Substack', title:'Discussion tab: reader-level engagement', works:'Making individual readers visible is a powerful growth lever — writers who reply to readers convert casual subscribers into loyal ones.', watchout:'This is a list, not a recommendation engine — Substack does not surface "reply to these 3 readers to grow," the writer must recognize and act themselves.', image:'https://mobbin.com/api/mcp/short/UHbfvW5J', url:'https://mobbin.com/screens/b201a777-9086-4cce-b6be-6516e7e11dc6' },
+  /* ─── PATREON ─── */
+  { app:'Patreon', title:'Creator profile: patron count and monthly earnings', works:'Showing both patrons and revenue together gives creators the two numbers that matter most in a single glance — no dashboard navigation required.', watchout:'No trend, no history, no growth rate — creators cannot tell whether their patron count is growing or stagnating.', image:'https://mobbin.com/api/mcp/short/XelmC2gL', url:'https://mobbin.com/screens/653c3d99-2693-42f1-9d83-5dc82384d3f1' },
+  { app:'Patreon', title:'Tier detail: benefit stack with patron count', works:'Connecting benefit design to patron count gives creators empirical evidence for which offering is working — a model for iterating tier structure.', watchout:'No recommendation or benchmarking: Patreon does not suggest which benefits convert well or how this tier compares to typical tiers at similar price points.', image:'https://mobbin.com/api/mcp/short/OVUzTnKo', url:'https://mobbin.com/screens/44e3439e-b2ff-41db-979a-fdc7c7760c8f' },
+  /* ─── LINEAR ─── */
+  { app:'Linear', title:'Issues board', works:'Kanban-style issue tracking with cycle and progress metadata gives teams a live pulse on work in flight — everything needed for a standup is visible without opening a single ticket.', watchout:'Issue boards can become sprawling — teams with many ungroomed issues face a high cognitive load just to orient, and no automatic prioritization helps surface what matters most.', image:'https://mobbin.com/api/mcp/short/SDMVSegY', url:'https://mobbin.com/screens/c4cfc742-1a09-4b85-a3c3-d6dd2b28f1de' },
+  { app:'Linear', title:'Project overview', works:'Progress bars per project milestone give teams a clear percentage-complete view without counting issues manually — the spatial metaphor maps well to how people intuitively think about projects.', watchout:'Progress bars measure issue count, not effort — closing many small issues can make a project look ahead of schedule while one critical blocker remains open.', image:'https://mobbin.com/api/mcp/short/cFsLCpIL', url:'https://mobbin.com/screens/983b457a-f8cc-45c2-ba37-177fb58eb973' },
+  { app:'Linear', title:'Project with update notification', works:'Surfacing project updates as an inline notification keeps async teams aligned without requiring a separate status meeting or Slack thread — context stays close to the work.', watchout:'Notifications are read-only prompts — team members see the update but have no in-context way to respond, which pushes discussion back out to Slack or email.', image:'https://mobbin.com/api/mcp/short/usZspAe5', url:'https://mobbin.com/screens/f8e3aa03-00f2-4985-a6ae-1055ae0f4144' },
+  /* ─── WHOOP ─── */
+  { app:'Whoop', title:'Stress monitor with daily timeline', works:'Specificity is what separates this from generic wellness advice — naming the exact time and duration of the stress episode makes the insight feel personally observed, not algorithmically generated.', watchout:'The insight describes the stress event but does not explain what caused it or what the user could change — it is observational rather than prescriptive.', image:'https://mobbin.com/api/mcp/short/nS5g508T', url:'https://mobbin.com/screens/42585581-a687-4acd-902c-55ea1e0e9336' },
+  { app:'Whoop', title:'Daily overview dashboard', works:'The circular gauge encodes four key metrics in a single glance without requiring any reading — users immediately see if their system is in balance or under stress.', watchout:'The arc metaphor requires learning what each ring represents — new users may not understand the visual encoding without the onboarding tutorial.', image:'https://mobbin.com/api/mcp/short/VLdWbKfV', url:'https://mobbin.com/screens/d0972fb1-ab4c-4aa6-96e6-ef6947d9a631' },
+  /* ─── OURA ─── */
+  { app:'Oura', title:'Home readiness score', works:'Score-calibrated coaching changes message tone and content with the user\'s state — a high-readiness message is different from a low-readiness message, making both feel more relevant.', watchout:'Coaching messages are positive and non-prescriptive — users looking for a specific action recommendation may find the guidance too vague to act on.', image:'https://mobbin.com/api/mcp/short/l02dPN9v', url:'https://mobbin.com/screens/e9b7815f-8a3e-4774-a777-f0b121901b21' },
+  { app:'Oura', title:'Readiness chart by date', works:'Decomposing the composite score into named contributors with status labels directly answers "why is my readiness lower today?" — eliminating the need for users to investigate themselves.', watchout:'Six contributors require the user to understand what each metric measures and why it matters — a significant knowledge prerequisite for new users.', image:'https://mobbin.com/api/mcp/short/Mo6pbvV0', url:'https://mobbin.com/screens/e745b574-5055-471d-8258-55460df2fa56' },
+  { app:'Oura', title:'Readiness contributors breakdown', works:'Showing a 30-day trend alongside today\'s status answers both "what is happening today?" and "is this getting better or worse?" in a single compact view.', watchout:'Status labels (Optimal, Pay attention, Fair) are not defined in the UI — users must infer the thresholds, which may lead to unnecessary anxiety or false confidence.', image:'https://mobbin.com/api/mcp/short/dktv1TKO', url:'https://mobbin.com/screens/3ebbaf31-1caa-414c-a070-334ea811881a' },
+  /* ─── EBAY ─── */
+  { app:'eBay', title:'Traffic performance: impressions, listing views, and CTR', works:'Traffic source breakdown (Organic vs. Promoted Listings) is separated for each channel that drove listing views — sellers know immediately whether their organic positioning or paid spend is doing the work.', watchout:'The per-listing traffic view is hard to find behind two navigation layers — most sellers checking performance land on the Sales tab first and may never discover the traffic breakdown.', image:'https://mobbin.com/api/mcp/short/sk0dXIwG', url:'https://mobbin.com/screens/bce548d8-4a3d-4969-8f33-af1f25d8427c' },
+  { app:'eBay', title:'Listing traffic history: organic vs. promoted trend', works:'Organic and Promoted traffic overlaid on the same chart give sellers a direct visual comparison of which channel drove more views across any given period — without needing to calculate the split manually.', watchout:'No action guidance follows from the chart — sellers who see that Promoted Listings underperformed organic views have no in-app pathway to adjust their campaign budget or targeting.', image:'https://mobbin.com/api/mcp/short/yQYo8qWT', url:'https://mobbin.com/screens/089302c2-32f7-4f4e-badf-9bf71817e88b' },
+  /* ─── SQUARESPACE ─── */
+  { app:'Squarespace', title:'Analytics: sales and traffic overview in one scroll', works:'Sales Overview (Revenue, Units Sold, Orders) and Traffic Overview (Visits, Unique Visitors, Pageviews) are both visible on a single scrollable Analytics screen — the mobile app packs the full seller dashboard into one compact view.', watchout:'Metric values show only the current day with a day/day trend — no period selector is visible on this screen, so sellers cannot compare weekly or monthly performance without finding the date picker elsewhere.', image:'https://mobbin.com/api/mcp/short/chFSYHJa', url:'https://mobbin.com/screens/95c1e09a-7efe-4d29-a1f8-ddd422d40d61' },
+  { app:'Squarespace', title:'Analytics: purchase funnel with stage-by-stage drop-off', works:'The mobile Purchase Funnel (Visits → Viewed → In Cart → Purchased) quantifies where buyers drop off at each stage — sellers can see the exact drop-off without navigating to a separate report.', watchout:'Funnel values are displayed as raw counts without percentage drop-off rates labeled on the bars themselves — sellers must calculate the conversion rate mentally rather than reading it directly.', image:'https://mobbin.com/api/mcp/short/mwpmotNS', url:'https://mobbin.com/screens/afba20c0-88b2-4700-9a15-e1f331adbdae' },
+];
+
+const INDUSTRY_GROUPS = [
+  { label: 'Commerce',         apps: ['Shopify', 'Square', 'Stripe', 'eBay', 'Squarespace', 'Wix', 'Gumroad', 'Depop', 'Wave'] },
+  { label: 'Creator & Social', apps: ['TikTok', 'Instagram', 'Pinterest', 'Substack', 'Patreon'] },
+  { label: 'Marketing',        apps: ['HubSpot', 'Mailchimp', 'Klaviyo'] },
+  { label: 'Productivity',     apps: ['Notion', 'Linear', 'Canva', 'Duolingo', 'LinkedIn'] },
+  { label: 'Health',           apps: ['Whoop', 'Oura'] },
+];
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let activeJtbd     = 'all';
+let activeApp      = 'all';
+let activeIndustry = 'all';
+let activeRating   = 'all';
+
+/* ═══════════════════════════════════════════════════
+   FILTER
+═══════════════════════════════════════════════════ */
+function getVisible() {
+  return SCREENS.filter(s => {
+    const jtbdOk     = activeJtbd === 'all' || s.jtbd === Number(activeJtbd);
+    const appOk      = activeApp  === 'all' || s.app  === activeApp;
+    const ratingOk   = activeRating === 'all' || APP_META[s.app]?.rating === activeRating;
+    const industryOk = activeIndustry === 'all' ||
+      (INDUSTRY_GROUPS.find(g => g.label === activeIndustry)?.apps.includes(s.app) ?? false);
+    return jtbdOk && appOk && ratingOk && industryOk;
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   APP CHIPS
+═══════════════════════════════════════════════════ */
+function renderChips() {
+  const container = document.getElementById('appChips');
+  container.innerHTML = '';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = `chip${activeApp === 'all' && activeIndustry === 'all' ? ' active' : ''}`;
+  allBtn.dataset.app = 'all';
+  allBtn.textContent = 'All apps';
+  allBtn.addEventListener('click', () => {
+    activeApp = 'all';
+    activeIndustry = 'all';
+    renderChips();
+    renderMain();
+  });
+  container.appendChild(allBtn);
+
+  INDUSTRY_GROUPS.forEach(group => {
+    const groupApps = group.apps.filter(app =>
+      SCREENS.some(s => s.app === app) || MOBILE_SCREENS.some(s => s.app === app)
+    );
+    if (!groupApps.length) return;
+
+    const sep = document.createElement('span');
+    sep.className = 'chip-group-sep';
+    container.appendChild(sep);
+
+    const lbl = document.createElement('button');
+    lbl.className = `chip-group-label${activeIndustry === group.label ? ' active' : ''}`;
+    lbl.textContent = group.label;
+    lbl.addEventListener('click', () => {
+      activeIndustry = activeIndustry === group.label ? 'all' : group.label;
+      activeApp = 'all';
+      renderChips();
+      renderMain();
+    });
+    container.appendChild(lbl);
+
+    groupApps.forEach(app => {
+      const m = APP_META[app] || { color: '#888' };
+      const hasScreens = SCREENS.some(s => {
+        const jtbdOk   = activeJtbd === 'all' || s.jtbd === Number(activeJtbd);
+        const ratingOk = activeRating === 'all' || APP_META[s.app]?.rating === activeRating;
+        return s.app === app && jtbdOk && ratingOk;
+      }) || (activeJtbd === 'all' && MOBILE_SCREENS.some(s => s.app === app) &&
+        !SCREENS.some(s => s.app === app) &&
+        (activeRating === 'all' || APP_META[app]?.rating === activeRating));
+
+      const btn = document.createElement('button');
+      btn.className = `chip${activeApp === app ? ' active' : ''}${!hasScreens ? ' unavailable' : ''}`;
+      btn.dataset.app = app;
+
+      if (m.logo) {
+        const img = document.createElement('img');
+        img.className = 'chip-logo';
+        img.src = m.logo;
+        img.alt = app;
+        img.onerror = function() {
+          this.replaceWith(Object.assign(document.createElement('span'), {
+            className: 'chip-dot', style: `background:${m.color}`
+          }));
+        };
+        btn.appendChild(img);
+      } else {
+        const dot = document.createElement('span');
+        dot.className = 'chip-dot';
+        dot.style.background = m.color;
+        btn.appendChild(dot);
+      }
+      btn.appendChild(document.createTextNode(app));
+      container.appendChild(btn);
+    });
+  });
+
+  container.querySelectorAll('.chip[data-app]:not(.unavailable):not([data-app="all"])').forEach(c => {
+    c.addEventListener('click', () => {
+      activeApp = c.dataset.app;
+      activeIndustry = 'all';
+      renderChips();
+      renderMain();
+    });
+  });
+}
+
+function initRatingButtons() {
+  const container = document.getElementById('ratingSeg');
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'rating-btn active';
+  allBtn.dataset.rating = 'all';
+  allBtn.textContent = 'All ratings';
+  allBtn.addEventListener('click', () => {
+    activeRating = 'all';
+    activeApp = 'all';
+    activeIndustry = 'all';
+    renderChips();
+    renderMain();
+  });
+  container.appendChild(allBtn);
+
+  ['better', 'average', 'poor'].forEach(r => {
+    const btn = document.createElement('button');
+    btn.className = 'rating-btn';
+    btn.dataset.rating = r;
+    btn.textContent = RATING_LABEL[r];
+    btn.addEventListener('click', () => {
+      activeRating = activeRating === r ? 'all' : r;
+      activeApp = 'all';
+      activeIndustry = 'all';
+      renderChips();
+      renderMain();
+    });
+    container.appendChild(btn);
+  });
+}
+
+function syncRatingButtons() {
+  const available = new Set();
+  SCREENS.forEach(s => {
+    const jtbdOk = activeJtbd === 'all' || s.jtbd === Number(activeJtbd);
+    const appOk  = activeApp  === 'all' || s.app  === activeApp;
+    if (jtbdOk && appOk) available.add(APP_META[s.app]?.rating ?? 'average');
+  });
+  // Also include mobile-only apps when not filtering by JTBD
+  if (activeJtbd === 'all') {
+    MOBILE_SCREENS.forEach(s => {
+      if (!SCREENS.some(sc => sc.app === s.app)) {
+        const appOk = activeApp === 'all' || s.app === activeApp;
+        if (appOk) available.add(APP_META[s.app]?.rating ?? 'average');
+      }
+    });
+  }
+
+  document.querySelectorAll('.rating-btn:not([data-rating="all"])').forEach(btn => {
+    const r = btn.dataset.rating;
+    const off = !available.has(r);
+    btn.classList.toggle('unavailable', off);
+    btn.classList.toggle('active', activeRating === r);
+    if (off && activeRating === r) activeRating = 'all';
+  });
+
+  const allBtn = document.querySelector('.rating-btn[data-rating="all"]');
+  if (allBtn) allBtn.classList.toggle('active', activeRating === 'all');
+}
+
+/* ═══════════════════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════════════════ */
+let lbScreens = [];
+let lbIndex   = 0;
+
+function openLightbox(app, index) {
+  lbScreens = getVisible().filter(s => s.app === app);
+  lbIndex   = index;
+  renderLbThumbs();
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openMobileLightbox(app, index) {
+  lbScreens = MOBILE_SCREENS.filter(s => s.app === app);
+  lbIndex   = index;
+  renderLbThumbs();
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderLbThumbs() {
+  const container = document.getElementById('lbThumbs');
+  container.innerHTML = '';
+  lbScreens.forEach((s, i) => {
+    const thumb = document.createElement('div');
+    thumb.className = `lb-thumb${i === lbIndex ? ' active' : ''}`;
+    const img = document.createElement('img');
+    img.src = s.image;
+    img.alt = s.title;
+    img.loading = 'lazy';
+    thumb.appendChild(img);
+    thumb.addEventListener('click', () => { lbIndex = i; updateLightbox(); });
+    container.appendChild(thumb);
+  });
+}
+
+function updateLightbox() {
+  const s = lbScreens[lbIndex];
+  document.getElementById('lbImg').src   = s.image;
+  document.getElementById('lbImg').alt   = s.title;
+  document.getElementById('lbTitle').textContent = s.title;
+  document.getElementById('lbLink').href = s.url;
+  document.getElementById('lbAppName').textContent = s.app;
+  const badge = document.getElementById('lbBadge');
+  if (s.jtbd != null) {
+    badge.className   = `jtbd-badge ${s.jtbd === 1 ? 'j1' : 'j2'}`;
+    badge.textContent = s.jtbd === 1 ? 'Performance' : 'Actions';
+    badge.removeAttribute('style');
+  } else {
+    badge.className = 'jtbd-badge';
+    badge.style.cssText = 'background:#F0EFED;color:#6B6560;';
+    badge.textContent = 'Mobile app';
+  }
+  document.getElementById('lbPrev').disabled = lbIndex === 0;
+  document.getElementById('lbNext').disabled = lbIndex === lbScreens.length - 1;
+
+  // App logo in info bar
+  const m = APP_META[s.app] || { color: '#888', letter: s.app[0] };
+  const logoEl = document.getElementById('lbAppLogo');
+  logoEl.style.background = m.color;
+  logoEl.style.color = m.dark ? '#333' : '#fff';
+  logoEl.innerHTML = m.logo
+    ? `${m.letter}<img src="${m.logo}" alt="${s.app}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.remove()">`
+    : m.letter;
+  logoEl.style.position = 'relative';
+
+  // Sync active thumbnail
+  document.querySelectorAll('.lb-thumb').forEach((t, i) => t.classList.toggle('active', i === lbIndex));
+  const active = document.querySelector('.lb-thumb.active');
+  if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+// Click background of image area to close
+document.getElementById('lbImageArea').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+document.getElementById('lbClose').addEventListener('click', closeLightbox);
+document.getElementById('lbPrev').addEventListener('click', () => { if (lbIndex > 0) { lbIndex--; updateLightbox(); } });
+document.getElementById('lbNext').addEventListener('click', () => { if (lbIndex < lbScreens.length - 1) { lbIndex++; updateLightbox(); } });
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft'  && lbIndex > 0)                     { lbIndex--; updateLightbox(); }
+  if (e.key === 'ArrowRight' && lbIndex < lbScreens.length - 1) { lbIndex++; updateLightbox(); }
+});
+
+/* ═══════════════════════════════════════════════════
+   CARD
+═══════════════════════════════════════════════════ */
+function makeCard(screen, appIndex) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.dataset.jtbd = screen.jtbd;
+
+  const jtbdClass = screen.jtbd === 1 ? 'j1' : 'j2';
+  const jtbdLabel = screen.jtbd === 1 ? 'Performance' : 'Actions';
+  const letter    = APP_META[screen.app]?.letter || screen.app[0];
+
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'card-img-container';
+  imgWrap.innerHTML = `
+    <img class="card-img" src="${screen.image}" alt="${screen.title}" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="card-img-placeholder"><span>${letter}</span></div>`;
+  imgWrap.addEventListener('click', () => openLightbox(screen.app, appIndex));
+
+  const evalHtml = (screen.works || screen.watchout) ? `
+    <div class="card-eval">
+      ${screen.works    ? `<div class="eval-row eval-works"><span class="eval-label">Works</span><span class="eval-text">${screen.works}</span></div>` : ''}
+      ${screen.watchout ? `<div class="eval-row eval-watchout"><span class="eval-label">Watch&nbsp;out</span><span class="eval-text">${screen.watchout}</span></div>` : ''}
+    </div>` : '';
+
+  div.innerHTML = `
+    <div class="card-body">
+      <span class="jtbd-badge ${jtbdClass}">${jtbdLabel}</span>
+      <div class="card-title">${screen.title}</div>
+      <div class="card-desc">${screen.desc}</div>
+      ${evalHtml}
+      <a class="card-link" href="${screen.url}" target="_blank" rel="noopener">
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+          <path d="M2 10L10 2M10 2H4.5M10 2V7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        View full-res on Mobbin
+      </a>
+    </div>`;
+
+  div.insertBefore(imgWrap, div.firstChild);
+  return div;
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER MAIN
+═══════════════════════════════════════════════════ */
+function renderMain() {
+  syncRatingButtons();
+  const main    = document.getElementById('main');
+  const visible = getVisible();
+
+  const appCount = new Set([
+    ...visible.map(s => s.app),
+    ...(activeJtbd === 'all' ? MOBILE_SCREENS
+      .filter(s => !SCREENS.some(sc => sc.app === s.app))
+      .map(s => s.app) : [])
+  ]).size;
+  document.getElementById('headerStats').innerHTML =
+    `<strong>${visible.length}</strong> screens · <strong>${appCount}</strong> apps`;
+
+  const hasMobileOnly = activeJtbd === 'all' && MOBILE_SCREENS.some(s => {
+    if (SCREENS.some(sc => sc.app === s.app)) return false;
+    const ratingOk   = activeRating === 'all' || APP_META[s.app]?.rating === activeRating;
+    const industryOk = activeIndustry === 'all' ||
+      (INDUSTRY_GROUPS.find(g => g.label === activeIndustry)?.apps.includes(s.app) ?? false);
+    const appOk      = activeApp === 'all' || s.app === activeApp;
+    return ratingOk && industryOk && appOk;
+  });
+  if (!visible.length && !hasMobileOnly) {
+    main.innerHTML = `<div class="empty-state"><p>No screens match the current filters.</p></div>`;
+    return;
+  }
+
+  main.innerHTML = '';
+  const apps = [...new Set(visible.map(s => s.app))];
+
+  // Include mobile-only apps (no SCREENS entries at all) when not filtering by JTBD
+  if (activeJtbd === 'all') {
+    const mobileOnlyApps = [...new Set(MOBILE_SCREENS
+      .filter(s => !SCREENS.some(sc => sc.app === s.app))
+      .map(s => s.app)
+    )].filter(app => {
+      if (apps.includes(app)) return false;
+      const ratingOk   = activeRating === 'all' || APP_META[app]?.rating === activeRating;
+      const industryOk = activeIndustry === 'all' ||
+        (INDUSTRY_GROUPS.find(g => g.label === activeIndustry)?.apps.includes(app) ?? false);
+      const appOk      = activeApp === 'all' || app === activeApp;
+      return ratingOk && industryOk && appOk;
+    });
+    apps.push(...mobileOnlyApps);
+  }
+
+  apps.forEach(app => {
+    const appScreens = visible.filter(s => s.app === app);
+    const isMobileOnly = appScreens.length === 0;
+    const m = APP_META[app] || { color: '#888', letter: app[0] };
+
+    const group = document.createElement('div');
+    group.className = 'app-group';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'app-group-header';
+    const j1Count = appScreens.filter(s => s.jtbd === 1).length;
+    const j2Count = appScreens.filter(s => s.jtbd === 2).length;
+    const breakdown = [
+      j1Count ? `<span class="count-dot j1"></span>${j1Count} Performance` : '',
+      j2Count ? `<span class="count-dot j2"></span>${j2Count} Actions` : '',
+    ].filter(Boolean).join('<span class="count-sep">·</span>');
+    const r = m.rating ?? 'average';
+    const logoInner = m.logo ? `${m.letter}<img src="${m.logo}" alt="${app}" onerror="this.remove()">` : m.letter;
+    const countHtml = isMobileOnly
+      ? `<span class="app-group-count">Mobile app only</span>`
+      : `<span class="app-group-count">${appScreens.length} screens: ${breakdown}</span>`;
+    header.innerHTML = `
+      <div class="app-logo" style="background:${m.color}${m.dark ? ';color:#333' : ''}">${logoInner}</div>
+      <span class="app-group-name">${app}</span>
+      ${countHtml}
+      <span class="rating-badge rating-${r}">${RATING_LABEL[r]}
+      </span>`;
+
+    // App summary block
+    group.appendChild(header);
+    const sum = m.summary;
+    if (sum) {
+      const sumEl = document.createElement('div');
+      sumEl.className = 'app-summary';
+      const mkList = (items, cls) =>
+        `<ul class="app-summary-list ${cls}">${items.map(t => `<li>${t}</li>`).join('')}</ul>`;
+      sumEl.innerHTML = `
+        <div class="app-summary-col">
+          <div class="app-summary-label">What works well</div>
+          ${mkList(sum.works, 'works')}
+        </div>
+        <div class="app-summary-col">
+          <div class="app-summary-label">Watch out for</div>
+          ${mkList(sum.watchout, 'watchout')}
+        </div>`;
+      group.appendChild(sumEl);
+    }
+
+    // Scroll row (desktop web screenshots only — skipped for mobile-only apps)
+    if (!isMobileOnly) {
+      const wrap = document.createElement('div');
+      wrap.className = 'card-grid-wrap at-start';
+
+      const grid = document.createElement('div');
+      grid.className = 'card-grid';
+      appScreens.forEach((s, i) => grid.appendChild(makeCard(s, i)));
+
+      const chevron = dir => `<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="${dir === 'right' ? 'M6 3l5 5-5 5' : 'M10 3L5 8l5 5'}"
+              stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+      const btnR = document.createElement('button');
+      btnR.className = 'scroll-arrow right';
+      btnR.innerHTML = chevron('right');
+      btnR.addEventListener('click', () => grid.scrollBy({ left: 780, behavior: 'smooth' }));
+
+      const btnL = document.createElement('button');
+      btnL.className = 'scroll-arrow left';
+      btnL.innerHTML = chevron('left');
+      btnL.addEventListener('click', () => grid.scrollBy({ left: -780, behavior: 'smooth' }));
+
+      grid.addEventListener('scroll', () => {
+        wrap.classList.toggle('at-end',   grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 8);
+        wrap.classList.toggle('at-start', grid.scrollLeft <= 8);
+      }, { passive: true });
+
+      wrap.appendChild(btnL);
+      wrap.appendChild(grid);
+      wrap.appendChild(btnR);
+      group.appendChild(wrap);
+    }
+
+    // Mobile row
+    const mobileScreens = MOBILE_SCREENS.filter(s => s.app === app);
+    if (mobileScreens.length) {
+      const mobileRow = document.createElement('div');
+      mobileRow.className = 'mobile-row';
+
+      const mobileHeader = document.createElement('div');
+      mobileHeader.className = 'mobile-row-header';
+      mobileHeader.innerHTML = `<svg width="10" height="14" viewBox="0 0 10 14" fill="none" style="flex-shrink:0"><rect x="0.75" y="0.75" width="8.5" height="12.5" rx="1.75" stroke="currentColor" stroke-width="1.25"/><rect x="3.5" y="11" width="3" height="1.25" rx="0.5" fill="currentColor"/></svg>Mobile app`;
+
+      const mobileGrid = document.createElement('div');
+      mobileGrid.className = 'mobile-card-grid';
+
+      mobileScreens.forEach((s, mobileIdx) => {
+        const card = document.createElement('div');
+        card.className = 'mobile-card';
+
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'mobile-card-img-wrap';
+        const img = document.createElement('img');
+        img.src = s.image;
+        img.alt = s.title;
+        img.loading = 'lazy';
+        imgWrap.appendChild(img);
+        imgWrap.addEventListener('click', () => openMobileLightbox(app, mobileIdx));
+
+        const body = document.createElement('div');
+        body.className = 'mobile-card-body';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'card-title';
+        titleEl.textContent = s.title;
+        body.appendChild(titleEl);
+
+        if (s.works || s.watchout) {
+          const evalEl = document.createElement('div');
+          evalEl.className = 'card-eval';
+          if (s.works) {
+            evalEl.innerHTML += `<div class="eval-row eval-works"><span class="eval-label">Works</span><span class="eval-text">${s.works}</span></div>`;
+          }
+          if (s.watchout) {
+            evalEl.innerHTML += `<div class="eval-row eval-watchout"><span class="eval-label">Watch&nbsp;out</span><span class="eval-text">${s.watchout}</span></div>`;
+          }
+          body.appendChild(evalEl);
+        }
+
+        const link = document.createElement('a');
+        link.className = 'card-link';
+        link.href = s.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.innerHTML = `<svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4.5M10 2V7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>View full-res on Mobbin`;
+        body.appendChild(link);
+
+        card.appendChild(imgWrap);
+        card.appendChild(body);
+        mobileGrid.appendChild(card);
+      });
+
+      mobileRow.appendChild(mobileHeader);
+      mobileRow.appendChild(mobileGrid);
+      group.appendChild(mobileRow);
+    }
+
+    main.appendChild(group);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+document.getElementById('topicSeg').addEventListener('click', e => {
+  const btn = e.target.closest('.seg-btn');
+  if (!btn) return;
+  activeJtbd     = btn.dataset.jtbd;
+  activeApp      = 'all';
+  activeIndustry = 'all';
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.toggle('active', b === btn));
+  renderChips();
+  renderMain();
+});
+
+/* Tab switching */
+document.querySelectorAll('.page-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const page = tab.dataset.page;
+    document.getElementById('main').style.display       = page === 'audit'     ? '' : 'none';
+    document.getElementById('synthesis').style.display  = page === 'synthesis' ? '' : 'none';
+    document.getElementById('suggest').style.display    = page === 'suggest'   ? '' : 'none';
+    document.getElementById('filter-bar').style.display = page === 'audit'     ? '' : 'none';
+  });
+});
+
+renderChips();
+initRatingButtons();
+renderMain();
+</script>
+</body>
+</html>
